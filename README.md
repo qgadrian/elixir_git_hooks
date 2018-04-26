@@ -55,7 +55,7 @@ mix git_hooks.install
 
 ## Configuration
 
-One or more git hooks can be configured, those git hooks will be the ones [installed](#installation) in your git project.
+One or more git hooks can be configured, those hooks will be the ones [installed](#installation) in your git project.
 
 Currently there are supported two configuration options:
   * **mix_tasks**: A list of the mix tasks that will run for the git hook
@@ -64,7 +64,7 @@ Currently there are supported two configuration options:
 ```elixir
 config :git_hooks,
   verbose: true,
-  git_hooks: [
+  hooks: [
     pre_commit: [
       mix_tasks: [
         "format"

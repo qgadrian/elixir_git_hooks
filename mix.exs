@@ -6,7 +6,7 @@ defmodule GitHooks.MixProject do
   def project do
     [
       app: :git_hooks,
-      version: "0.1.0",
+      version: "0.1.1",
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
@@ -47,7 +47,7 @@ defmodule GitHooks.MixProject do
   end
 
   defp description do
-    "Add git hooks to Elixir projects"
+    "Add git hooks to your Elixir projects"
   end
 
   # Run "mix help deps" to learn about dependencies.

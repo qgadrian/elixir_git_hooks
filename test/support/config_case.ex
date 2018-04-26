@@ -18,7 +18,7 @@ defmodule GitHooks.TestSupport.ConfigCase do
 
       @spec cleanup_config() :: :ok
       def cleanup_config do
-        Application.delete_env(:git_hooks, :git_hooks)
+        Application.delete_env(:git_hooks, :hooks)
         Application.delete_env(:git_hooks, :verbose)
       end
 
@@ -31,7 +31,7 @@ defmodule GitHooks.TestSupport.ConfigCase do
 
         git_hook_configuration = Keyword.new([{git_hook_type, git_hook_config}])
 
-        Application.put_env(:git_hooks, :git_hooks, git_hook_configuration)
+        Application.put_env(:git_hooks, :hooks, git_hook_configuration)
       end
 
       @spec put_git_hook_configs(list(atom()), Keyword.t()) :: :ok
@@ -46,7 +46,7 @@ defmodule GitHooks.TestSupport.ConfigCase do
           |> Enum.map(&{&1, git_hook_config})
           |> Keyword.new()
 
-        Application.put_env(:git_hooks, :git_hooks, git_hook_configuration)
+        Application.put_env(:git_hooks, :hooks, git_hook_configuration)
       end
     end
   end

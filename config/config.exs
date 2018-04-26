@@ -32,7 +32,7 @@ use Mix.Config
 ### Example configurations
 
 config :git_hooks,
-  git_hooks: [
+  hooks: [
     pre_commit: [
       verbose: true,
       mix_tasks: [
