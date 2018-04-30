@@ -1,7 +1,5 @@
 defmodule GitHooks.Printer do
-  @moduledoc """
-  Provides functions to print text in the a given color or format.
-  """
+  @moduledoc false
 
   @spec info(String.t()) :: :ok
   def info(message) do
