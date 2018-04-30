@@ -12,14 +12,17 @@ defmodule Mix.Tasks.GitHooks.Install do
   alias GitHooks.Printer
 
   @impl true
-  def run(_args) do
-    install()
+  def run(args) do
+    {opts, _other_args, _} =
+      OptionParser.parse(args, switches: [quiet: :boolean], aliases: [q: :quiet])
+
+    install(opts)
 
     :ok
   end
 
   @spec install(Keyword.t()) :: any()
-  def install(opts \\ []) do
+  defp install(opts) do
     # Project.deps_path()
     # |> Path.join("/git_hooks/priv/hook_template")
     template_file =
@@ -61,7 +64,7 @@ defmodule Mix.Tasks.GitHooks.Install do
   end
 
   @spec backup_current_hook(String.t()) :: {:error, atom()} | {:ok, non_neg_integer()}
-  def backup_current_hook(git_hook_to_backup) do
+  defp backup_current_hook(git_hook_to_backup) do
     source_file_path =
       Project.deps_path()
       |> Path.join("/../.git/hooks/#{git_hook_to_backup}")

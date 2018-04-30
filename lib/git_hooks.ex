@@ -4,5 +4,5 @@ defmodule GitHooks do
   """
 
   # credo:disable-for-next-line Credo.Check.Design.AliasUsage
-  Mix.Tasks.GitHooks.Install.install(quiet: true)
+  Mix.Tasks.GitHooks.Install.run(["--quiet"])
 end
