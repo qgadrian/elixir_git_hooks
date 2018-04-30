@@ -58,7 +58,7 @@ defmodule Mix.Tasks.GitHooks.Install do
             )
           end
 
-          backup_current_hook(git_hook_atom_as_kebab_string)
+          backup_current_hook(git_hook_atom_as_kebab_string, opts)
 
           File.write(target_file_path, target_file_body)
           File.chmod(target_file_path, 0o755)
@@ -71,8 +71,9 @@ defmodule Mix.Tasks.GitHooks.Install do
     :ok
   end
 
-  @spec backup_current_hook(String.t()) :: {:error, atom()} | {:ok, non_neg_integer()}
-  defp backup_current_hook(git_hook_to_backup) do
+  @spec backup_current_hook(String.t(), Keyword.t()) ::
+          {:error, atom()} | {:ok, non_neg_integer()}
+  defp backup_current_hook(git_hook_to_backup, opts) do
     source_file_path =
       Project.deps_path()
       |> Path.join("/../.git/hooks/#{git_hook_to_backup}")
@@ -80,6 +81,10 @@ defmodule Mix.Tasks.GitHooks.Install do
     target_file_path =
       Project.deps_path()
       |> Path.join("/../.git/hooks/#{git_hook_to_backup}.pre_git_hooks_backup")
+
+    unless opts[:quiet] do
+      Printer.warn("Backing up git hook file `#{source_file_path}` to `#{target_file_path}`")
+    end
 
     File.copy(source_file_path, target_file_path)
   end
