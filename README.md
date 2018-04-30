@@ -26,14 +26,14 @@ Add to dependencies:
 
 ```elixir
 def deps do
-  [{:git_hooks, "~> 0.1.0"}]
+  [{:git_hooks, "~> 0.1.1"}]
 end
 ```
 
-The install the dependencies:
+Then install and compile the dependencies:
 
 ```bash
-mix deps.get
+mix deps.get && mix deps.compile
 ```
 
 ### Backup current hooks

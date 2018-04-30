@@ -3,15 +3,24 @@ defmodule GitHooks.MixProject do
 
   use Mix.Project
 
+  @version "0.1.1"
+
   def project do
     [
       app: :git_hooks,
-      version: "0.1.1",
+      version: @version,
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       package: package(),
       description: description(),
+      docs: [
+        source_ref: "v#{@version}",
+        main: "installation",
+        extra_section: "README",
+        formatters: ["html", "epub"],
+        extras: extras()
+      ],
       aliases: aliases(),
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
@@ -68,6 +77,12 @@ defmodule GitHooks.MixProject do
       compile: ["compile --warnings-as-errors"],
       coveralls: ["coveralls.html"],
       "coveralls.html": ["coveralls.html"]
+    ]
+  end
+
+  defp extras do
+    [
+      "README.md"
     ]
   end
 end

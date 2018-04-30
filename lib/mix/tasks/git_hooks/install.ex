@@ -1,9 +1,19 @@
 defmodule Mix.Tasks.GitHooks.Install do
-  @moduledoc """
-  This module installs the configured git hooks.
-  """
+  @shortdoc "Installs the configured git hooks backing up the previous files."
 
-  @shortdoc "This module install the configured git hooks."
+  @moduledoc """
+  Installs the configured git hooks.
+
+  Before installing the new hooks, the already hooks files are backed up
+  with the extension `.pre_git_hooks_backup`.
+
+  ## Command line options
+    * `--quiet` - disables the output of the files that are beeing copied/backed up
+
+  To manually install the git hooks run:
+
+    `mix git_hooks.install`
+  """
 
   use Mix.Task
 
@@ -23,8 +33,6 @@ defmodule Mix.Tasks.GitHooks.Install do
 
   @spec install(Keyword.t()) :: any()
   defp install(opts) do
-    # Project.deps_path()
-    # |> Path.join("/git_hooks/priv/hook_template")
     template_file =
       :git_hooks
       |> :code.priv_dir()

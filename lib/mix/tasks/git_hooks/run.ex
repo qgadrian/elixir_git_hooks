@@ -1,8 +1,8 @@
 defmodule Mix.Tasks.GitHooks.Run do
-  @moduledoc """
-  Module that defines the a git hook that will the configured mix tasks .
+  @shortdoc "Runs all the configured mix tasks for a given git hook."
 
-  The task will exepect an argument that will determine which git hook to run.
+  @moduledoc """
+  Runs all the configured mix tasks for a given git hook.
 
   The supported git hooks are:
     * pre_commit
@@ -11,9 +11,11 @@ defmodule Mix.Tasks.GitHooks.Run do
     * pre_receive
     * pre_applypatch
     * post_update
-  """
 
-  @shortdoc "Module that defines a git hook that will run the configured mix tasks."
+  For example, to run the pre_commit hook tasks run:
+
+    `mix git_hooks.run pre_commit`
+  """
 
   use Mix.Task
 
