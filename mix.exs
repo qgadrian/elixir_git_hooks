@@ -58,7 +58,8 @@ defmodule GitHooks.MixProject do
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
       {:credo, "~> 0.9", only: [:dev, :test], runtime: false},
       {:blankable, "~> 0.0.1"},
-      {:recase, "~> 0.2"}
+      {:recase, "~> 0.2"},
+      {:inch_ex, ">= 0.0.0", only: :docs}
     ]
   end
 

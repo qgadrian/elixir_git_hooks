@@ -8,3 +8,6 @@ notifications:
   email:
     on_success: change
     on_failure: always
+after_script:
+  - MIX_ENV=docs mix deps.get
+  - MIX_ENV=docs mix inch.report
