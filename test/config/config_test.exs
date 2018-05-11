@@ -10,7 +10,7 @@ defmodule GitHooks.ConfigTest do
     test "when there are not configured mix tasks then an empty list is returned" do
       put_git_hook_config(:pre_commit, mix_tasks: ["help", "help deps"])
 
-      assert Config.mix_tasks(:unknown_hook) == []
+      assert Config.mix_tasks(:unknown_hook) == {:unknown_hook, []}
     end
 
     test "when there are configured mix tasks then a list of the mix tasks is returned" do
@@ -18,7 +18,7 @@ defmodule GitHooks.ConfigTest do
 
       put_git_hook_config(:pre_commit, mix_tasks: mix_tasks)
 
-      assert Config.mix_tasks(:pre_commit) == mix_tasks
+      assert Config.mix_tasks(:pre_commit) == {:pre_commit, mix_tasks}
     end
 
     test "when the verbose is enabled for the git hook then the verbose config function returns true" do

@@ -23,10 +23,13 @@ defmodule GitHooks.Config do
 
   @spec mix_tasks(atom()) :: list(String.t())
   def mix_tasks(git_hook_type) do
-    :git_hooks
-    |> Application.get_env(:hooks, [])
-    |> Keyword.get(git_hook_type, [])
-    |> Keyword.get(:mix_tasks, [])
+    mix_tasks =
+      :git_hooks
+      |> Application.get_env(:hooks, [])
+      |> Keyword.get(git_hook_type, [])
+      |> Keyword.get(:mix_tasks, [])
+
+    {git_hook_type, mix_tasks}
   end
 
   @spec verbose?(atom()) :: boolean()

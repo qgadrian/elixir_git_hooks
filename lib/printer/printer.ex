@@ -3,9 +3,19 @@ defmodule GitHooks.Printer do
 
   @type message :: String.t()
 
-  @spec info(any, message) :: any
-  def info(return_this, message) do
-    info(message)
+  @spec info(any, message, keyword) :: any
+  def info(return_this, message, opts \\ []) do
+    case Keyword.has_key?(opts, :append_first_arg) do
+      true when is_binary(return_this) ->
+        info(message <> return_this)
+
+      true ->
+        info(message <> inspect(return_this))
+
+      false ->
+        info(message)
+    end
+
     return_this
   end
 

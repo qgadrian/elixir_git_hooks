@@ -28,19 +28,19 @@ defmodule Mix.Tasks.GitHooks.Run do
     |> List.first()
     |> get_atom_from_arg()
     |> check_is_valid_git_hook!()
-    |> Printer.info("Running hooks for #{git_hook_type}")
+    |> Printer.info("Running hooks for ", append_first_arg: true)
     |> Config.mix_tasks()
-    |> run_mix_tasks(git_hook_type)
+    |> run_mix_tasks()
     |> success_exit()
   end
 
-  @spec run_mix_tasks(list(String.t()), atom())
-  defp run_mix_tasks(commands, git_hook_type) do
-    Enum.each(commands, &run_command(&1, git_hook_type))
+  @spec run_mix_tasks({atom(), list(String.t())}) :: any
+  defp run_mix_tasks({git_hook_type, mix_tasks}) do
+    Enum.each(mix_tasks, &run_mix_task(&1, git_hook_type))
   end
 
   @spec run_mix_task(String.t(), atom()) :: :ok | no_return
-  defp run_mix_task(command, git_hook_type) do
+  defp run_mix_task(mix_task, git_hook_type) do
     "mix"
     |> System.cmd(
       String.split(mix_task, " "),
