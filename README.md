@@ -17,6 +17,7 @@ Installs [git hooks](https://git-scm.com/docs/githooks) that will run in your El
   - [Manual](#manual-installation)
 - [Configuration](#configuration)
 - [Execution](#execution)
+  - [Supported hooks](#supported-hooks)
   - [Automatic](#automatic-execution)
   - [Manual](#manual-execution)
 
@@ -26,7 +27,7 @@ Add to dependencies:
 
 ```elixir
 def deps do
-  [{:git_hooks, "~> 0.1.1"}]
+  [{:git_hooks, "~> 0.1.2"}]
 end
 ```
 
@@ -83,6 +84,16 @@ config :git_hooks,
 
 ## Execution
 
+### Supported hooks
+
+Currently, in terms of simplifying the usage of this library, the git hooks are:
+  * pre_commit
+  * pre_push
+  * pre_rebase
+  * pre_receive
+  * pre_applypatch
+  * post_update
+
 ### Automatic execution
 
 The configured mix tasks will run automatically for each [git hook](https://git-scm.com/docs/githooks#_hooks).
@@ -95,4 +106,10 @@ The following example will run the pre_commit configuration:
 
 ```bash
 mix git_hooks.run pre_commit
+```
+
+It is also possible to run all the configured hooks:
+
+```bash
+mix git_hooks.run all
 ```

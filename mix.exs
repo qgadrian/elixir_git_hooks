@@ -3,7 +3,7 @@ defmodule GitHooks.MixProject do
 
   use Mix.Project
 
-  @version "0.1.1"
+  @version "0.1.2"
 
   def project do
     [
@@ -16,7 +16,7 @@ defmodule GitHooks.MixProject do
       description: description(),
       docs: [
         source_ref: "v#{@version}",
-        main: "installation",
+        main: "readme",
         extra_section: "README",
         formatters: ["html", "epub"],
         extras: extras()

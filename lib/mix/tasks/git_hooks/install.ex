@@ -71,8 +71,7 @@ defmodule Mix.Tasks.GitHooks.Install do
     :ok
   end
 
-  @spec backup_current_hook(String.t(), Keyword.t()) ::
-          {:error, atom} | {:ok, non_neg_integer()}
+  @spec backup_current_hook(String.t(), Keyword.t()) :: {:error, atom} | {:ok, non_neg_integer()}
   defp backup_current_hook(git_hook_to_backup, opts) do
     source_file_path =
       Project.deps_path()

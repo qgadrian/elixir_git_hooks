@@ -69,7 +69,7 @@ defmodule Mix.Tasks.GitHooks.Run do
       git_hook_type ->
         git_hook_type
         |> Recase.to_snake()
-        |> String.to_atom
+        |> String.to_atom()
     end
   end
 

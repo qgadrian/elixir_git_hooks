@@ -10,8 +10,8 @@ defmodule GitHooks.Config do
     :post_update
   ]
 
-  def supported_hooks, do: @supported_hooks
   @spec supported_hooks() :: list(atom)
+  def supported_hooks, do: @supported_hooks ++ [:all]
 
   @spec git_hooks() :: list(atom)
   def git_hooks do
@@ -22,6 +22,20 @@ defmodule GitHooks.Config do
   end
 
   @spec mix_tasks(atom) :: list(String.t())
+  def mix_tasks(git_hook_type)
+
+  def mix_tasks(:all = git_hook_type) do
+    mix_tasks =
+      :git_hooks
+      |> Application.get_env(:hooks, [])
+      |> Enum.reduce([], fn {_hook_type, hook_config}, acc ->
+        hook_mix_tasks = Keyword.get(hook_config, :mix_tasks, [])
+        acc ++ hook_mix_tasks
+      end)
+
+    {git_hook_type, mix_tasks}
+  end
+
   def mix_tasks(git_hook_type) do
     mix_tasks =
       :git_hooks

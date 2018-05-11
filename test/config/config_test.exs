@@ -7,6 +7,12 @@ defmodule GitHooks.ConfigTest do
   alias GitHooks.Config
 
   describe "Given a git hook type" do
+    test "when it is all then all the configured hooks are run" do
+      put_git_hook_config([:pre_commit, :pre_push], mix_tasks: ["help", "help deps"])
+
+      assert Config.mix_tasks(:all) == {:all, ["help", "help deps", "help", "help deps"]}
+    end
+
     test "when there are not configured mix tasks then an empty list is returned" do
       put_git_hook_config(:pre_commit, mix_tasks: ["help", "help deps"])
 
