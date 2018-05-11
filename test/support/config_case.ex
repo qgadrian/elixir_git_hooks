@@ -22,20 +22,10 @@ defmodule GitHooks.TestSupport.ConfigCase do
         Application.delete_env(:git_hooks, :verbose)
       end
 
-      @spec put_git_hook_config(atom(), Keyword.t()) :: :ok
-      def put_git_hook_config(git_hook_type, opts \\ []) do
-        git_hook_config = [
-          verbose: opts[:verbose] || @default_verbose,
-          mix_tasks: opts[:mix_tasks] || @default_mix_tasks
-        ]
+      @spec put_git_hook_config(list(atom) | atom, keyword) :: :ok
+      def put_git_hook_config(git_hook_type_or_types, opts \\ [])
 
-        git_hook_configuration = Keyword.new([{git_hook_type, git_hook_config}])
-
-        Application.put_env(:git_hooks, :hooks, git_hook_configuration)
-      end
-
-      @spec put_git_hook_configs(list(atom()), Keyword.t()) :: :ok
-      def put_git_hook_configs(git_hook_types, opts \\ []) do
+      def put_git_hook_config(git_hook_types, opts) when is_list(git_hook_types) do
         git_hook_config = [
           verbose: opts[:verbose] || @default_verbose,
           mix_tasks: opts[:mix_tasks] || @default_mix_tasks
@@ -45,6 +35,17 @@ defmodule GitHooks.TestSupport.ConfigCase do
           git_hook_types
           |> Enum.map(&{&1, git_hook_config})
           |> Keyword.new()
+
+        Application.put_env(:git_hooks, :hooks, git_hook_configuration)
+      end
+
+      def put_git_hook_config(git_hook_type, opts) do
+        git_hook_config = [
+          verbose: opts[:verbose] || @default_verbose,
+          mix_tasks: opts[:mix_tasks] || @default_mix_tasks
+        ]
+
+        git_hook_configuration = Keyword.new([{git_hook_type, git_hook_config}])
 
         Application.put_env(:git_hooks, :hooks, git_hook_configuration)
       end

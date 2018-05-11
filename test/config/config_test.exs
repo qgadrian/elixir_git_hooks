@@ -51,19 +51,19 @@ defmodule GitHooks.ConfigTest do
     end
 
     test "when request the git hooks types then a list of supported git hooks types is returned" do
-      put_git_hook_configs([:pre_commit, :pre_push])
+      put_git_hook_config([:pre_commit, :pre_push])
 
       assert Config.git_hooks() == [:pre_commit, :pre_push]
     end
 
     test "when the verbose is enabled then a IO stream is returned" do
-      put_git_hook_configs([:pre_commit], verbose: true)
+      put_git_hook_config([:pre_commit], verbose: true)
 
       assert Config.io_stream(:pre_commit) == IO.stream(:stdio, :line)
     end
 
     test "when the verbose is disabled then an empty string is returned" do
-      put_git_hook_configs([:pre_commit, :pre_push], verbose: false)
+      put_git_hook_config([:pre_commit, :pre_push], verbose: false)
 
       assert Config.io_stream(:pre_commit) == ""
     end

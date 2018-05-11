@@ -10,10 +10,10 @@ defmodule GitHooks.Config do
     :post_update
   ]
 
-  @spec supported_hooks() :: list(atom())
   def supported_hooks, do: @supported_hooks
+  @spec supported_hooks() :: list(atom)
 
-  @spec git_hooks() :: list(atom())
+  @spec git_hooks() :: list(atom)
   def git_hooks do
     :git_hooks
     |> Application.get_env(:hooks, [])
@@ -21,7 +21,7 @@ defmodule GitHooks.Config do
     |> Keyword.keys()
   end
 
-  @spec mix_tasks(atom()) :: list(String.t())
+  @spec mix_tasks(atom) :: list(String.t())
   def mix_tasks(git_hook_type) do
     mix_tasks =
       :git_hooks
@@ -32,7 +32,7 @@ defmodule GitHooks.Config do
     {git_hook_type, mix_tasks}
   end
 
-  @spec verbose?(atom()) :: boolean()
+  @spec verbose?(atom) :: boolean()
   def verbose?(git_hook_type) do
     :git_hooks
     |> Application.get_env(:hooks, [])
@@ -40,7 +40,7 @@ defmodule GitHooks.Config do
     |> Keyword.get(:verbose, Application.get_env(:git_hooks, :verbose, false))
   end
 
-  @spec io_stream(atom()) :: any()
+  @spec io_stream(atom) :: any()
   def io_stream(git_hook_type) do
     case verbose?(git_hook_type) do
       true ->

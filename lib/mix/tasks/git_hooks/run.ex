@@ -34,12 +34,12 @@ defmodule Mix.Tasks.GitHooks.Run do
     |> success_exit()
   end
 
-  @spec run_mix_tasks({atom(), list(String.t())}) :: any
+  @spec run_mix_tasks({atom, list(String.t())}) :: any
   defp run_mix_tasks({git_hook_type, mix_tasks}) do
     Enum.each(mix_tasks, &run_mix_task(&1, git_hook_type))
   end
 
-  @spec run_mix_task(String.t(), atom()) :: :ok | no_return
+  @spec run_mix_task(String.t(), atom) :: :ok | no_return
   defp run_mix_task(mix_task, git_hook_type) do
     "mix"
     |> System.cmd(
@@ -59,7 +59,7 @@ defmodule Mix.Tasks.GitHooks.Run do
     end
   end
 
-  @spec get_atom_from_arg(String.t()) :: atom() | no_return
+  @spec get_atom_from_arg(String.t()) :: atom | no_return
   defp get_atom_from_arg(git_hook_type_arg) do
     case git_hook_type_arg do
       nil ->
@@ -69,11 +69,11 @@ defmodule Mix.Tasks.GitHooks.Run do
       git_hook_type ->
         git_hook_type
         |> Recase.to_snake()
-        |> String.to_atom()
+        |> String.to_atom
     end
   end
 
-  @spec check_is_valid_git_hook!(atom()) :: no_return
+  @spec check_is_valid_git_hook!(atom) :: no_return
   defp check_is_valid_git_hook!(git_hook_type) do
     unless Enum.any?(Config.supported_hooks(), &(&1 == git_hook_type)) do
       Printer.error("Invalid or unsupported hook `#{git_hook_type}`")
