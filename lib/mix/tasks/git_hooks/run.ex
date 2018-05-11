@@ -24,17 +24,13 @@ defmodule Mix.Tasks.GitHooks.Run do
 
   @impl true
   def run(args) do
-    git_hook_type =
-      args
-      |> List.first()
-      |> get_atom_from_arg()
-      |> check_is_valid_git_hook!()
-
-    Printer.info("Running hooks for #{git_hook_type}")
-
-    git_hook_type
     |> Config.mix_tasks()
     |> Enum.each(&run_commands(&1, git_hook_type))
+    args
+    |> List.first()
+    |> get_atom_from_arg()
+    |> check_is_valid_git_hook!()
+    |> Printer.info("Running hooks for #{git_hook_type}")
     |> success_exit()
   end
 
