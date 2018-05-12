@@ -9,6 +9,8 @@
 
 Installs [git hooks](https://git-scm.com/docs/githooks) that will run in your Elixir project.
 
+Any git hook type is supported, [check here the hooks list](https://git-scm.com/docs/githooks).
+
 ## Table of Contents
 
 - [Installation](#installation)
@@ -27,7 +29,7 @@ Add to dependencies:
 
 ```elixir
 def deps do
-  [{:git_hooks, "~> 0.1.2"}]
+  [{:git_hooks, "~> 0.2.0"}]
 end
 ```
 
@@ -83,16 +85,6 @@ config :git_hooks,
 ```
 
 ## Execution
-
-### Supported hooks
-
-Currently, in terms of simplifying the usage of this library, the git hooks are:
-  * pre_commit
-  * pre_push
-  * pre_rebase
-  * pre_receive
-  * pre_applypatch
-  * post_update
 
 ### Automatic execution
 

@@ -3,11 +3,25 @@ defmodule GitHooks.Config do
 
   @supported_hooks [
     :pre_commit,
-    :pre_push,
+    :prepare_commit_msg,
+    :commit_msg,
+    :post_commit,
     :pre_rebase,
     :pre_receive,
+    :post_receive,
+    :post_checkout,
+    :post_merge,
+    :pre_push,
+    :push_to_checkout,
     :pre_applypatch,
-    :post_update
+    :applypatch_msg,
+    :post_applypatch,
+    :update,
+    :post_update,
+    :pre_auto_gc,
+    :post_rewrite,
+    :sendemail_validate,
+    :fsmonitor_watchman
   ]
 
   @spec supported_hooks() :: list(atom)

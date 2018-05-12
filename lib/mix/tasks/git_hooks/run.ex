@@ -4,17 +4,15 @@ defmodule Mix.Tasks.GitHooks.Run do
   @moduledoc """
   Runs all the configured mix tasks for a given git hook.
 
-  The supported git hooks are:
-    * pre_commit
-    * pre_push
-    * pre_rebase
-    * pre_receive
-    * pre_applypatch
-    * post_update
+  Any [git hook](https://git-scm.com/docs/githooks) is supported.
 
-  For example, to run the pre_commit hook tasks run:
+  For example, to run the `pre_commit` hook tasks run:
 
     `mix git_hooks.run pre_commit`
+
+  Or you can also all the configured hooks with:
+
+    `mix git_hooks.run all`
   """
 
   use Mix.Task
