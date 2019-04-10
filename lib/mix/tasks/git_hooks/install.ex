@@ -37,6 +37,9 @@ defmodule Mix.Tasks.GitHooks.Install do
       |> :code.priv_dir()
       |> Path.join("/hook_template")
 
+    clean_missing_hooks()
+    track_configured_hooks()
+
     Config.git_hooks()
     |> Enum.each(fn git_hook ->
       git_hook_atom_as_string = Atom.to_string(git_hook)
@@ -85,5 +88,45 @@ defmodule Mix.Tasks.GitHooks.Install do
     end
 
     File.copy(source_file_path, target_file_path)
+  end
+
+  @spec track_configured_hooks() :: any
+  defp track_configured_hooks do
+    git_hooks = Config.git_hooks() |> Enum.join(" ")
+
+    Project.deps_path()
+    |> Path.join("/../.git/hooks/git_hooks.db")
+    |> File.open!([:write])
+    |> IO.binwrite(git_hooks)
+  end
+
+  @spec clean_missing_hooks() :: any
+  defp clean_missing_hooks do
+    git_hooks =
+      Config.git_hooks()
+      |> Enum.map(&Atom.to_string/1)
+
+    Project.deps_path()
+    |> Path.join("/../.git/hooks/git_hooks.db")
+    |> File.read()
+    |> case do
+      {:ok, file} ->
+        file
+        |> String.split(" ")
+        |> Enum.each(fn installed_git_hook ->
+          if installed_git_hook not in git_hooks do
+            git_hook_atom_as_kebab_string = Recase.to_kebab(installed_git_hook)
+
+            Printer.warn("Remove old git hook `#{git_hook_atom_as_kebab_string}`")
+
+            Project.deps_path()
+            |> Path.join("/../.git/hooks/#{git_hook_atom_as_kebab_string}")
+            |> File.rm!()
+          end
+        end)
+
+      _error ->
+        :ok
+    end
   end
 end

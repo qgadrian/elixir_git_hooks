@@ -84,6 +84,13 @@ config :git_hooks,
   ]
 ```
 
+## Removing a hook
+
+When a git hook configuration is removed, the installed hook will automatically
+delete it.
+
+Any backup done at the moment will still be kept.
+
 ## Execution
 
 ### Automatic execution
