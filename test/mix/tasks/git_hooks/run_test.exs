@@ -24,7 +24,7 @@ defmodule Mix.Tasks.RunTest do
     end
 
     test "when the git hook it's supported then it's executed and the task returns :ok" do
-      put_git_hook_config(:pre_commit, mix_tasks: ["help test"], verbose: true)
+      put_git_hook_config(:pre_commit, tasks: ["mix help test"], verbose: true)
 
       capture_io(fn ->
         assert Run.run(["pre-commit"]) == :ok
@@ -32,7 +32,7 @@ defmodule Mix.Tasks.RunTest do
     end
 
     test "when a mix task of the git hook fails then it's executed and the task exits with 0" do
-      put_git_hook_config(:pre_commit, mix_tasks: ["this_task_is_going_to_fail"])
+      put_git_hook_config(:pre_commit, tasks: ["this_task_is_going_to_fail"])
 
       capture_io(fn ->
         assert catch_exit(Run.run(["pre-commit"])) == 1

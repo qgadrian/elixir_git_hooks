@@ -35,29 +35,29 @@ defmodule GitHooks.Config do
     |> Keyword.keys()
   end
 
-  @spec mix_tasks(atom) :: list(String.t())
-  def mix_tasks(git_hook_type)
+  @spec tasks(atom) :: list(String.t())
+  def tasks(git_hook_type)
 
-  def mix_tasks(:all = git_hook_type) do
-    mix_tasks =
+  def tasks(:all = git_hook_type) do
+    tasks =
       :git_hooks
       |> Application.get_env(:hooks, [])
       |> Enum.reduce([], fn {_hook_type, hook_config}, acc ->
-        hook_mix_tasks = Keyword.get(hook_config, :mix_tasks, [])
-        acc ++ hook_mix_tasks
+        hook_tasks = Keyword.get(hook_config, :tasks, [])
+        acc ++ hook_tasks
       end)
 
-    {git_hook_type, mix_tasks}
+    {git_hook_type, tasks}
   end
 
-  def mix_tasks(git_hook_type) do
-    mix_tasks =
+  def tasks(git_hook_type) do
+    tasks =
       :git_hooks
       |> Application.get_env(:hooks, [])
       |> Keyword.get(git_hook_type, [])
-      |> Keyword.get(:mix_tasks, [])
+      |> Keyword.get(:tasks, [])
 
-    {git_hook_type, mix_tasks}
+    {git_hook_type, tasks}
   end
 
   @spec verbose?(atom) :: boolean()
@@ -71,11 +71,8 @@ defmodule GitHooks.Config do
   @spec io_stream(atom) :: any()
   def io_stream(git_hook_type) do
     case verbose?(git_hook_type) do
-      true ->
-        IO.stream(:stdio, :line)
-
-      _ ->
-        ""
+      true -> IO.stream(:stdio, :line)
+      _ -> ""
     end
   end
 end

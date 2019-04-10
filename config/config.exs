@@ -4,16 +4,16 @@ config :git_hooks,
   hooks: [
     pre_commit: [
       verbose: true,
-      mix_tasks: [
-        "format --check-formatted --dry-run",
-        "credo"
+      tasks: [
+        "mix format --check-formatted --dry-run",
+        "mix credo"
       ]
     ],
     pre_push: [
       verbose: true,
-      mix_tasks: [
-        "dialyzer",
-        "coveralls"
+      tasks: [
+        "mix dialyzer",
+        "mix coveralls"
       ]
     ]
   ]

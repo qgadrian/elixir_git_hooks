@@ -18,17 +18,16 @@ defmodule Mix.Tasks.GitHooks.Install do
   use Mix.Task
 
   alias GitHooks.Config
-  alias Mix.Project
   alias GitHooks.Printer
+  alias Mix.Project
 
   @impl true
+  @spec run(Keyword.t()) :: list(String.t())
   def run(args) do
     {opts, _other_args, _} =
       OptionParser.parse(args, switches: [quiet: :boolean], aliases: [q: :quiet])
 
     install(opts)
-
-    :ok
   end
 
   @spec install(Keyword.t()) :: any()

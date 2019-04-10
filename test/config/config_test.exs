@@ -8,23 +8,23 @@ defmodule GitHooks.ConfigTest do
 
   describe "Given a git hook type" do
     test "when it is all then all the configured hooks are run" do
-      put_git_hook_config([:pre_commit, :pre_push], mix_tasks: ["help", "help deps"])
+      put_git_hook_config([:pre_commit, :pre_push], tasks: ["help", "help deps"])
 
-      assert Config.mix_tasks(:all) == {:all, ["help", "help deps", "help", "help deps"]}
+      assert Config.tasks(:all) == {:all, ["help", "help deps", "help", "help deps"]}
     end
 
     test "when there are not configured mix tasks then an empty list is returned" do
-      put_git_hook_config(:pre_commit, mix_tasks: ["help", "help deps"])
+      put_git_hook_config(:pre_commit, tasks: ["help", "help deps"])
 
-      assert Config.mix_tasks(:unknown_hook) == {:unknown_hook, []}
+      assert Config.tasks(:unknown_hook) == {:unknown_hook, []}
     end
 
     test "when there are configured mix tasks then a list of the mix tasks is returned" do
-      mix_tasks = ["help", "help deps"]
+      tasks = ["help", "help deps"]
 
-      put_git_hook_config(:pre_commit, mix_tasks: mix_tasks)
+      put_git_hook_config(:pre_commit, tasks: tasks)
 
-      assert Config.mix_tasks(:pre_commit) == {:pre_commit, mix_tasks}
+      assert Config.tasks(:pre_commit) == {:pre_commit, tasks}
     end
 
     test "when the verbose is enabled for the git hook then the verbose config function returns true" do

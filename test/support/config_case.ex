@@ -8,7 +8,7 @@ defmodule GitHooks.TestSupport.ConfigCase do
   using do
     quote do
       @default_verbose false
-      @default_mix_tasks ["help", "help deps"]
+      @default_mix_tasks ["mix help", "mix help deps"]
 
       setup do
         on_exit(fn ->
@@ -28,7 +28,7 @@ defmodule GitHooks.TestSupport.ConfigCase do
       def put_git_hook_config(git_hook_types, opts) when is_list(git_hook_types) do
         git_hook_config = [
           verbose: opts[:verbose] || @default_verbose,
-          mix_tasks: opts[:mix_tasks] || @default_mix_tasks
+          tasks: opts[:tasks] || @default_mix_tasks
         ]
 
         git_hook_configuration =
@@ -42,7 +42,7 @@ defmodule GitHooks.TestSupport.ConfigCase do
       def put_git_hook_config(git_hook_type, opts) do
         git_hook_config = [
           verbose: opts[:verbose] || @default_verbose,
-          mix_tasks: opts[:mix_tasks] || @default_mix_tasks
+          tasks: opts[:tasks] || @default_mix_tasks
         ]
 
         git_hook_configuration = Keyword.new([{git_hook_type, git_hook_config}])

@@ -6,13 +6,15 @@ defmodule Mix.Tasks.GitHooks.Run do
 
   Any [git hook](https://git-scm.com/docs/githooks) is supported.
 
-  For example, to run the `pre_commit` hook tasks run:
+  ## Examples
 
-    `mix git_hooks.run pre_commit`
+  You can run any hook by running `mix git_hooks.run hook_name`. For example:
 
-  Or you can also all the configured hooks with:
+  ```elixir
+  mix git_hooks.run pre_commit
+  ```
 
-    `mix git_hooks.run all`
+  You can also all the hooks which are configured with `mix git_hooks.run all`.
   """
 
   use Mix.Task
@@ -27,34 +29,40 @@ defmodule Mix.Tasks.GitHooks.Run do
     |> get_atom_from_arg()
     |> check_is_valid_git_hook!()
     |> Printer.info("Running hooks for ", append_first_arg: true)
-    |> Config.mix_tasks()
-    |> run_mix_tasks()
+    |> Config.tasks()
+    |> run_tasks()
     |> success_exit()
   end
 
-  @spec run_mix_tasks({atom, list(String.t())}) :: any
-  defp run_mix_tasks({git_hook_type, mix_tasks}) do
+  @spec run_tasks({atom, list(String.t())}) :: any
+  defp run_tasks({git_hook_type, mix_tasks}) do
     Enum.each(mix_tasks, &run_mix_task(&1, git_hook_type))
   end
 
   @spec run_mix_task(String.t(), atom) :: :ok | no_return
-  defp run_mix_task(mix_task, git_hook_type) do
-    "mix"
+  defp run_mix_task(task, git_hook_type) do
+    [command | args] = String.split(task, " ")
+
+    command
     |> System.cmd(
-      String.split(mix_task, " "),
+      args,
       stderr_to_stdout: true,
       into: Config.io_stream(git_hook_type)
     )
     |> case do
       {_result, 0} ->
-        Printer.success("`mix #{mix_task}` was successful")
+        Printer.success("`#{task}` was successful")
 
       {result, _} ->
         if !Config.verbose?(git_hook_type), do: IO.puts(result)
 
-        Printer.error("#{Atom.to_string(git_hook_type)} failed on `mix #{mix_task}`")
+        Printer.error("#{Atom.to_string(git_hook_type)} failed on `#{task}`")
         error_exit()
     end
+  rescue
+    error ->
+      Printer.error("Error executing the command: #{inspect(error)}")
+      error_exit()
   end
 
   @spec get_atom_from_arg(String.t()) :: atom | no_return
