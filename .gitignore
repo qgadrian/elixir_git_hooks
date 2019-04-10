@@ -22,3 +22,6 @@ erl_crash.dump
 
 # Ignore package tarball (built via "mix hex.build").
 git_hooks-*.tar
+
+## Stuff
+.elixir_ls/
