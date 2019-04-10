@@ -23,6 +23,7 @@ defmodule Mix.Tasks.GitHooks.Run do
   alias GitHooks.Printer
 
   @impl true
+  @spec run(list(String.t())) :: :ok | no_return
   def run(args) do
     args
     |> List.first()
@@ -34,13 +35,13 @@ defmodule Mix.Tasks.GitHooks.Run do
     |> success_exit()
   end
 
-  @spec run_tasks({atom, list(String.t())}) :: any
-  defp run_tasks({git_hook_type, mix_tasks}) do
-    Enum.each(mix_tasks, &run_mix_task(&1, git_hook_type))
+  @spec run_tasks({atom, list(String.t())}) :: :ok
+  defp run_tasks({git_hook_type, tasks}) do
+    Enum.each(tasks, &run_task(&1, git_hook_type))
   end
 
-  @spec run_mix_task(String.t(), atom) :: :ok | no_return
-  defp run_mix_task(task, git_hook_type) do
+  @spec run_task(String.t(), atom) :: :ok | no_return
+  defp run_task(task, git_hook_type) do
     [command | args] = String.split(task, " ")
 
     command
@@ -90,7 +91,7 @@ defmodule Mix.Tasks.GitHooks.Run do
     git_hook_type
   end
 
-  @spec success_exit(any()) :: :ok
+  @spec success_exit(any) :: :ok
   defp success_exit(_), do: :ok
 
   @spec error_exit(non_neg_integer) :: no_return

@@ -35,7 +35,7 @@ defmodule GitHooks.Config do
     |> Keyword.keys()
   end
 
-  @spec tasks(atom) :: list(String.t())
+  @spec tasks(atom) :: {atom, list(String.t())}
   def tasks(git_hook_type)
 
   def tasks(:all = git_hook_type) do

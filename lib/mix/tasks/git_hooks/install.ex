@@ -22,7 +22,7 @@ defmodule Mix.Tasks.GitHooks.Install do
   alias Mix.Project
 
   @impl true
-  @spec run(Keyword.t()) :: list(String.t())
+  @spec run(Keyword.t()) :: :ok
   def run(args) do
     {opts, _other_args, _} =
       OptionParser.parse(args, switches: [quiet: :boolean], aliases: [q: :quiet])
