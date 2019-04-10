@@ -34,11 +34,9 @@ defmodule GitHooks.MixProject do
     ]
   end
 
-  # # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       extra_applications: [:logger]
@@ -59,7 +57,6 @@ defmodule GitHooks.MixProject do
     "Add git hooks to your Elixir projects"
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       {:ex_doc, ">= 0.0.0", only: :dev},
