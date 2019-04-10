@@ -7,9 +7,11 @@
 
 # GitHooks
 
-Installs [git hooks](https://git-scm.com/docs/githooks) that will run in your Elixir project.
+Installs [git hooks](https://git-scm.com/docs/githooks) that will run in your
+Elixir project.
 
-Any git hook type is supported, [check here the hooks list](https://git-scm.com/docs/githooks).
+Any git hook type is supported, [check here the hooks
+list](https://git-scm.com/docs/githooks).
 
 ## Table of Contents
 
@@ -29,7 +31,7 @@ Add to dependencies:
 
 ```elixir
 def deps do
-  [{:git_hooks, "~> 0.2.0", only: :dev, runtime: false}]
+  [{:git_hooks, "~> 0.3.0", only: :dev, runtime: false}]
 end
 ```
 
@@ -41,13 +43,15 @@ mix deps.get && mix deps.compile
 
 ### Backup current hooks
 
-This project will backup automatically your the hook files that are going to be overwrite.
+This project will backup automatically your the hook files that are going to be
+overwrite.
 
 The backup files will have the file extension `.pre_git_hooks_backup`.
 
 ### Automatic installation
 
-This library will install automatically the configured git hooks in your `config.exs` file.
+This library will install automatically the configured git hooks in your
+`config.exs` file.
 
 ### Manual installation
 
@@ -59,10 +63,12 @@ mix git_hooks.install
 
 ## Configuration
 
-One or more git hooks can be configured, those hooks will be the ones [installed](#installation) in your git project.
+One or more git hooks can be configured, those hooks will be the ones
+[installed](#installation) in your git project.
 
 Currently there are supported two configuration options:
-  * **mix_tasks**: A list of the mix tasks that will run for the git hook
+
+  * **tasks**: A list of the commands that will be executed when running a git hook
   * **verbose**: If true, the output of the mix tasks will be visible. This can be configured globally or per git hook.
 
 ```elixir
@@ -70,15 +76,16 @@ config :git_hooks,
   verbose: true,
   hooks: [
     pre_commit: [
-      mix_tasks: [
-        "format"
+      tasks: [
+        "mix format"
       ]
     ],
     pre_push: [
       verbose: false,
-      mix_tasks: [
-        "dialyzer",
-        "test"
+      tasks: [
+        "mix dialyzer",
+        "mix test",
+        "echo 'success!'
       ]
     ]
   ]
@@ -95,7 +102,8 @@ Any backup done at the moment will still be kept.
 
 ### Automatic execution
 
-The configured mix tasks will run automatically for each [git hook](https://git-scm.com/docs/githooks#_hooks).
+The configured mix tasks will run automatically for each [git
+hook](https://git-scm.com/docs/githooks#_hooks).
 
 ### Manual execution
 
