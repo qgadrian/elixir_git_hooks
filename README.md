@@ -84,7 +84,7 @@ config :git_hooks,
       tasks: [
         "mix dialyzer",
         "mix test",
-        "echo 'success!'
+        "echo 'success!'"
       ]
     ]
   ]
