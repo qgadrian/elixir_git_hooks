@@ -96,8 +96,22 @@ defmodule Mix.Tasks.GitHooks.Install do
 
     Project.deps_path()
     |> Path.join("/../.git/hooks/git_hooks.db")
-    |> File.open!([:write])
-    |> IO.binwrite(git_hooks)
+    |> write_backup(git_hooks)
+  end
+
+  @spec write_backup(String.t(), String.t()) :: any
+  defp write_backup(file_path, git_hooks) do
+    if File.exists?(file_path) do
+      file_path
+      |> File.open!([:write])
+      |> IO.binwrite(git_hooks)
+    else
+      Printer.warn("Couldn't find git_hooks.db file, won't be able to restore old backups.")
+
+      Printer.warn(
+        "Check that you are not missing `.git` folder, otherwise open a ticket at https://github.com/qgadrian/elixir_git_hooks/issues/new"
+      )
+    end
   end
 
   @spec clean_missing_hooks() :: any
