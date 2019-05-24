@@ -63,7 +63,7 @@ defmodule GitHooks.MixProject do
       {:excoveralls, "~> 0.10", only: :test},
       {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false},
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
-      {:blankable, "~> 0.0.1"},
+      {:blankable, "~> 1.0.0"},
       {:recase, "~> 0.2"},
       {:inch_ex, ">= 0.0.0", only: :docs}
     ]
