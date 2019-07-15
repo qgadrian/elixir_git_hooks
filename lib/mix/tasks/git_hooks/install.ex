@@ -101,22 +101,23 @@ defmodule Mix.Tasks.GitHooks.Install do
 
   @spec write_backup(String.t(), String.t()) :: any
   defp write_backup(file_path, git_hooks) do
-    if File.exists?(file_path) do
-      file_path
-      |> File.open!([:write])
-      |> IO.binwrite(git_hooks)
-    else
-      Printer.warn("Couldn't find git_hooks.db file, won't be able to restore old backups.")
+    file_path
+    |> File.open!([:write])
+    |> IO.binwrite(git_hooks)
+  rescue
+    error ->
+      Printer.warn(
+        "Couldn't find git_hooks.db file, won't be able to restore old backups: #{inspect(error)}"
+      )
 
       Printer.warn(
         "Check that you are not missing `.git` folder, otherwise open a ticket at https://github.com/qgadrian/elixir_git_hooks/issues/new"
       )
-    end
   end
 
   @spec clean_missing_hooks() :: any
   defp clean_missing_hooks do
-    git_hooks =
+    configured_git_hooks =
       Config.git_hooks()
       |> Enum.map(&Atom.to_string/1)
 
@@ -128,19 +129,43 @@ defmodule Mix.Tasks.GitHooks.Install do
         file
         |> String.split(" ")
         |> Enum.each(fn installed_git_hook ->
-          if installed_git_hook not in git_hooks do
+          if installed_git_hook not in configured_git_hooks do
             git_hook_atom_as_kebab_string = Recase.to_kebab(installed_git_hook)
 
-            Printer.warn("Remove old git hook `#{git_hook_atom_as_kebab_string}`")
+            Printer.warn(
+              "Remove old git hook `#{git_hook_atom_as_kebab_string}` and restore backup"
+            )
 
             Project.deps_path()
             |> Path.join("/../.git/hooks/#{git_hook_atom_as_kebab_string}")
-            |> File.rm!()
+            |> File.rm()
+
+            restore_backup(git_hook_atom_as_kebab_string)
           end
         end)
 
       _error ->
         :ok
+    end
+  end
+
+  @spec restore_backup(String.t()) :: any
+  defp restore_backup(git_hook_atom_as_kebab_string) do
+    backup_path =
+      Path.join(
+        Project.deps_path(),
+        "/../.git/hooks/#{git_hook_atom_as_kebab_string}.pre_git_hooks_backup"
+      )
+
+    restore_path =
+      Path.join(
+        Project.deps_path(),
+        "/../.git/hooks/#{git_hook_atom_as_kebab_string}"
+      )
+
+    case File.rename(backup_path, restore_path) do
+      :ok -> :ok
+      {:error, reason} -> Printer.warn("Cannot restore backup: #{inspect(reason)}")
     end
   end
 end
