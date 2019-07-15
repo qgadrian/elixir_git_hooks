@@ -90,6 +90,25 @@ config :git_hooks,
   ]
 ```
 
+### Using a script file
+
+It's possible configure a script file to run as a git hook:
+
+```elixir
+config :git_hooks,
+  verbose: true,
+  hooks: [
+    commit_msg: [
+      tasks: [
+        {:file, "./priv/test_script"}
+      ]
+    ]
+  ]
+```
+
+The script file executed will receive the arguments from git, so you can use
+them as you please.
+
 ## Removing a hook
 
 When a git hook configuration is removed, the installed hook will automatically
