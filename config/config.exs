@@ -2,6 +2,12 @@ use Mix.Config
 
 config :git_hooks,
   hooks: [
+    commit_msg: [
+      verbose: true,
+      tasks: [
+        {:file, "./priv/test_script"}
+      ]
+    ],
     pre_commit: [
       verbose: true,
       tasks: [

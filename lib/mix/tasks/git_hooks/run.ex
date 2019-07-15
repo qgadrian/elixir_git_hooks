@@ -22,26 +22,42 @@ defmodule Mix.Tasks.GitHooks.Run do
   alias GitHooks.Config
   alias GitHooks.Printer
 
+  @opaque git_hook_args :: list(String.t())
+
   @impl true
   @spec run(list(String.t())) :: :ok | no_return
+  def run([]), do: error_exit()
+
   def run(args) do
-    args
-    |> List.first()
+    {[git_hook_name], args} = Enum.split(args, 1)
+
+    git_hook_name
     |> get_atom_from_arg()
     |> check_is_valid_git_hook!()
     |> Printer.info("Running hooks for ", append_first_arg: true)
     |> Config.tasks()
-    |> run_tasks()
+    |> run_tasks(args)
     |> success_exit()
   end
 
-  @spec run_tasks({atom, list(String.t())}) :: :ok
-  defp run_tasks({git_hook_type, tasks}) do
-    Enum.each(tasks, &run_task(&1, git_hook_type))
+  @spec run_tasks({atom, list(String.t())}, git_hook_args()) :: :ok
+  defp run_tasks({git_hook_type, tasks}, git_hook_args) do
+    Enum.each(tasks, &run_task(&1, git_hook_type, git_hook_args))
   end
 
-  @spec run_task(String.t(), atom) :: :ok | no_return
-  defp run_task(task, git_hook_type) do
+  @spec run_task(String.t(), atom, git_hook_args()) :: :ok | no_return
+  @spec run_task({:file, String.t()}, atom, git_hook_args()) :: :ok | no_return
+  defp run_task({:file, script_file}, git_hook_type, git_hook_args) do
+    script_file
+    |> Path.absname()
+    |> System.cmd(
+      git_hook_args,
+      stderr_to_stdout: true,
+      into: Config.io_stream(git_hook_type)
+    )
+  end
+
+  defp run_task(task, git_hook_type, _git_hook_args) do
     [command | args] = String.split(task, " ")
 
     command
