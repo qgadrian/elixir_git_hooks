@@ -37,6 +37,8 @@ defmodule Mix.Tasks.GitHooks.Install do
       |> :code.priv_dir()
       |> Path.join("/hook_template")
 
+    Printer.info("Installing git hooks...")
+
     clean_missing_hooks()
     track_configured_hooks()
 
@@ -54,8 +56,8 @@ defmodule Mix.Tasks.GitHooks.Install do
           target_file_body =
             String.replace(body, "$git_hook", git_hook_atom_as_string, global: true)
 
-          unless opts[:quiet] do
-            Printer.warn(
+          unless opts[:quiet] || !Config.verbose?() do
+            Printer.info(
               "Writing git hook for `#{git_hook_atom_as_string}` to `#{target_file_path}`"
             )
           end
@@ -83,8 +85,8 @@ defmodule Mix.Tasks.GitHooks.Install do
       Project.deps_path()
       |> Path.join("/../.git/hooks/#{git_hook_to_backup}.pre_git_hooks_backup")
 
-    unless opts[:quiet] do
-      Printer.warn("Backing up git hook file `#{source_file_path}` to `#{target_file_path}`")
+    unless opts[:quiet] || !Config.verbose?() do
+      Printer.info("Backing up git hook file `#{source_file_path}` to `#{target_file_path}`")
     end
 
     File.copy(source_file_path, target_file_path)
