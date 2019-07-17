@@ -10,6 +10,16 @@ defmodule Mix.Tasks.RunTest do
 
   alias Mix.Tasks.GitHooks.Run
 
+  describe "Given task" do
+    test "when it is a file then the file it's executed" do
+      put_git_hook_config(:pre_commit, tasks: [{:file, "priv/test_script"}], verbose: true)
+
+      assert capture_io(fn ->
+               assert Run.run(["pre-commit"]) == :ok
+             end) =~ "Test script"
+    end
+  end
+
   describe "Given args for the mix git hook task" do
     test "when no git hook type is provided then the process exits with 1" do
       capture_io(fn ->
