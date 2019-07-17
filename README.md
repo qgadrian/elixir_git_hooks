@@ -14,15 +14,23 @@ list](https://git-scm.com/docs/githooks).
 
 ## Table of Contents
 
-- [Installation](#installation)
-  - [Backup](#backup-current-hooks)
-  - [Automatic](#automatic-installation)
-  - [Manual](#manual-installation)
-- [Configuration](#configuration)
-- [Execution](#execution)
-  - [Supported hooks](#supported-hooks)
-  - [Automatic](#automatic-execution)
-  - [Manual](#manual-execution)
+<!-- vim-markdown-toc Marked -->
+
+* [Installation](#installation)
+  * [Backup current hooks](#backup-current-hooks)
+  * [Automatic installation](#automatic-installation)
+  * [Manual installation](#manual-installation)
+* [Configuration](#configuration)
+  * [Example config](#example-config)
+  * [Type of tasks](#type-of-tasks)
+    * [Command](#command)
+    * [Executable file](#executable-file)
+* [Removing a hook](#removing-a-hook)
+* [Execution](#execution)
+  * [Automatic execution](#automatic-execution)
+  * [Manual execution](#manual-execution)
+
+<!-- vim-markdown-toc -->
 
 ## Installation
 
@@ -30,7 +38,7 @@ Add to dependencies:
 
 ```elixir
 def deps do
-  [{:git_hooks, "~> 0.3.0", only: [:test, :dev], runtime: false}]
+  [{:git_hooks, "~> 0.3.2-pre3", only: [:test, :dev], runtime: false}]
 end
 ```
 
@@ -69,6 +77,8 @@ Currently there are supported two configuration options:
 
   * **tasks**: A list of the commands that will be executed when running a git hook. [See types of tasks](#type-of-tasks) for more info.
   * **verbose**: If true, the output of the mix tasks will be visible. This can be configured globally or per git hook.
+
+### Example config
 
 ```elixir
 config :git_hooks,
