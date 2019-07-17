@@ -24,6 +24,27 @@ defmodule Mix.Tasks.GitHooks.Run do
 
   @opaque git_hook_args :: list(String.t())
 
+  @typedoc """
+  Run options:
+
+  * `include_hook_args?`: Whether the git hook args should be sent to the
+  command to be executed. In case of `true`, the args will be amended to the
+  command. Defaults to `false`.
+  """
+  @type run_opts :: [{:include_hook_args, String.t()}]
+
+  @doc """
+  Runs a task for a given git hook.
+
+  The task can be one of three different types:
+
+  * `{:cmd, "command arg1 arg2"}`: Runs a command.
+  * `{:file, "path_to_file"}`: Runs an executable file.
+  * `"command arg1 arg2"`: Runs a simple command, supports no options.
+
+  The first two options above can use a third element in the tuple, see
+  [here](`t:run_opts/0`) more info about the options.
+  """
   @impl true
   @spec run(list(String.t())) :: :ok | no_return
   def run([]), do: error_exit()
@@ -46,34 +67,55 @@ defmodule Mix.Tasks.GitHooks.Run do
   end
 
   @spec run_task(String.t(), atom, git_hook_args()) :: :ok | no_return
-  @spec run_task({:file, String.t()}, atom, git_hook_args()) :: :ok | no_return
+  @spec run_task({:file, String.t(), run_opts()}, atom, git_hook_args()) :: :ok | no_return
+  @spec run_task({:cmd, String.t(), run_opts()}, atom, git_hook_args()) :: :ok | no_return
   defp run_task({:file, script_file}, git_hook_type, git_hook_args) do
+    run_task({:file, script_file, []}, git_hook_type, git_hook_args)
+  end
+
+  defp run_task({:file, script_file, opts}, git_hook_type, git_hook_args) do
+    args =
+      if Keyword.get(opts, :include_hook_args?, false) do
+        git_hook_args
+      else
+        []
+      end
+
     script_file
     |> Path.absname()
     |> System.cmd(
-      git_hook_args,
-      stderr_to_stdout: true,
+      args,
       into: Config.io_stream(git_hook_type)
     )
   end
 
-  defp run_task(task, git_hook_type, _git_hook_args) do
-    [command | args] = String.split(task, " ")
+  defp run_task({:cmd, command}, git_hook_type, git_hook_args) do
+    run_task({:cmd, command, []}, git_hook_type, git_hook_args)
+  end
+
+  defp run_task({:cmd, command, opts}, git_hook_type, git_hook_args) when is_list(opts) do
+    [command | args] = String.split(command, " ")
+
+    command_args =
+      if Keyword.get(opts, :include_hook_args?, false) do
+        Enum.concat(args, git_hook_args)
+      else
+        args
+      end
 
     command
     |> System.cmd(
-      args,
-      stderr_to_stdout: true,
+      command_args,
       into: Config.io_stream(git_hook_type)
     )
     |> case do
       {_result, 0} ->
-        Printer.success("`#{task}` was successful")
+        Printer.success("`#{command}` was successful")
 
       {result, _} ->
         if !Config.verbose?(git_hook_type), do: IO.puts(result)
 
-        Printer.error("#{Atom.to_string(git_hook_type)} failed on `#{task}`")
+        Printer.error("#{Atom.to_string(git_hook_type)} failed on `#{command}`")
         error_exit()
     end
   rescue
@@ -81,6 +123,16 @@ defmodule Mix.Tasks.GitHooks.Run do
       Printer.error("Error executing the command: #{inspect(error)}")
       error_exit()
   end
+
+  defp run_task(command, git_hook_type, git_hook_args) when is_binary(command) do
+    run_task({:cmd, command, []}, git_hook_type, git_hook_args)
+  end
+
+  defp run_task(task, git_hook_type, _git_hook_args),
+    do:
+      raise("""
+      Invalid task #{inspect(task)} for hook #{inspect(git_hook_type)}", only String, {:file, ""} or {:cmd, ""} are supported.
+      """)
 
   @spec get_atom_from_arg(String.t()) :: atom | no_return
   defp get_atom_from_arg(git_hook_type_arg) do

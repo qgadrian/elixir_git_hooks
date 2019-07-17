@@ -18,6 +18,33 @@ defmodule Mix.Tasks.RunTest do
                assert Run.run(["pre-commit"]) == :ok
              end) =~ "Test script"
     end
+
+    test "when it is a command then the command it's executed" do
+      put_git_hook_config(:pre_commit, tasks: [{:cmd, "echo 'test command'"}], verbose: true)
+
+      assert capture_io(fn ->
+               assert Run.run(["pre-commit"]) == :ok
+             end) =~ "test command"
+    end
+
+    test "when it is a string then the command it's executed" do
+      put_git_hook_config(:pre_commit, tasks: ["echo 'test string command'"], verbose: true)
+
+      assert capture_io(fn ->
+               assert Run.run(["pre-commit"]) == :ok
+             end) =~ "test string command"
+    end
+
+    test "when the config is unknown then an error is raised" do
+      put_git_hook_config(:pre_commit,
+        tasks: [{:cmd, "echo 'test string command'", :make_it_fail}],
+        verbose: true
+      )
+
+      capture_io(fn ->
+        assert_raise RuntimeError, fn -> Run.run(["pre-commit"]) end
+      end)
+    end
   end
 
   describe "Given args for the mix git hook task" do
