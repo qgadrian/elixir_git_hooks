@@ -3,7 +3,7 @@ defmodule GitHooks.MixProject do
 
   use Mix.Project
 
-  @version "0.3.1-pre"
+  @version "0.3.2-pre3"
 
   def project do
     [

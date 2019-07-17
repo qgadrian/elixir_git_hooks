@@ -67,7 +67,7 @@ One or more git hooks can be configured, those hooks will be the ones
 
 Currently there are supported two configuration options:
 
-  * **tasks**: A list of the commands that will be executed when running a git hook
+  * **tasks**: A list of the commands that will be executed when running a git hook. [See types of tasks](#type-of-tasks) for more info.
   * **verbose**: If true, the output of the mix tasks will be visible. This can be configured globally or per git hook.
 
 ```elixir
@@ -90,9 +90,13 @@ config :git_hooks,
   ]
 ```
 
-### Using a script file
+### Type of tasks
 
-It's possible configure a script file to run as a git hook:
+#### Command
+
+To run a simple command you can either declare a string or a tuple with the
+command you want to run. If you want to forward the git hook arguments, add the
+option `include_hook_args?: true`.
 
 ```elixir
 config :git_hooks,
@@ -100,7 +104,26 @@ config :git_hooks,
   hooks: [
     commit_msg: [
       tasks: [
-        {:file, "./priv/test_script"}
+        {:cmd, "echo 'test'"},
+        {:cmd, "elixir ./priv/test_task.ex", include_hook_args?: true},
+      ]
+    ]
+  ]
+```
+#### Executable file
+
+The following configuration uses a script file to be run with a git hook. If you
+want to forward the git hook arguments, add the option `include_hook_args?:
+true`.
+
+```elixir
+config :git_hooks,
+  verbose: true,
+  hooks: [
+    commit_msg: [
+      tasks: [
+        {:file, "./priv/test_script"},
+        {:file, "./priv/test_script_with_args", include_hook_args?: true},
       ]
     ]
   ]
