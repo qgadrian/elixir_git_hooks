@@ -105,8 +105,11 @@ config :git_hooks,
 #### Command
 
 To run a simple command you can either declare a string or a tuple with the
-command you want to run. If you want to forward the git hook arguments, add the
-option `include_hook_args?: true`.
+command you want to run. For example, having `"mix test"` and `{:cmd, "mix
+test"}` in the hook `tasks` will be equivalent.
+
+> If you want to forward the git hook arguments, add the option
+> `include_hook_args?: true`.
 
 ```elixir
 config :git_hooks,
@@ -120,6 +123,7 @@ config :git_hooks,
     ]
   ]
 ```
+
 #### Executable file
 
 The following configuration uses a script file to be run with a git hook. If you
