@@ -110,7 +110,7 @@ defmodule Mix.Tasks.GitHooks.Run do
     )
     |> case do
       {_result, 0} ->
-        Printer.success("`#{command}` was successful")
+        Printer.success("`#{command} #{Enum.join(command_args, " ")}` was successful")
 
       {result, _} ->
         if !Config.verbose?(git_hook_type), do: IO.puts(result)

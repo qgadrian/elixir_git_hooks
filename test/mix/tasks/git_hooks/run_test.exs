@@ -45,6 +45,15 @@ defmodule Mix.Tasks.RunTest do
         assert_raise RuntimeError, fn -> Run.run(["pre-commit"]) end
       end)
     end
+
+    test "when verbose is enabled then the execution of a mix task prints the args" do
+      put_git_hook_config(:pre_commit,
+        tasks: [{:cmd, "mix help clean"}],
+        verbose: true
+      )
+
+      assert capture_io(fn -> Run.run(["pre-commit"]) end) =~ "`mix help clean` was successful"
+    end
   end
 
   describe "Given args for the mix git hook task" do
