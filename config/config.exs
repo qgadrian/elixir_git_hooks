@@ -5,8 +5,8 @@ config :git_hooks,
     commit_msg: [
       verbose: true,
       tasks: [
-        {:file, "./priv/test_script", include_hook_args?: true},
-        {:cmd, "elixir ./priv/test_task.ex", include_hook_args?: true}
+        {:file, "./priv/test_script", include_hook_args: true},
+        {:cmd, "elixir ./priv/test_task.ex", include_hook_args: true}
       ]
     ],
     pre_commit: [

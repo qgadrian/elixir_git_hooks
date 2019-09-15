@@ -27,7 +27,7 @@ defmodule Mix.Tasks.GitHooks.Run do
   @typedoc """
   Run options:
 
-  * `include_hook_args?`: Whether the git hook args should be sent to the
+  * `include_hook_args`: Whether the git hook args should be sent to the
   command to be executed. In case of `true`, the args will be amended to the
   command. Defaults to `false`.
   """
@@ -74,11 +74,21 @@ defmodule Mix.Tasks.GitHooks.Run do
   end
 
   defp run_task({:file, script_file, opts}, git_hook_type, git_hook_args) do
+    # TODO remove deprecation in new version
     args =
-      if Keyword.get(opts, :include_hook_args?, false) do
-        git_hook_args
-      else
-        []
+      cond do
+        Keyword.get(opts, :include_hook_args?, false) ->
+          Printer.warn(
+            "WARNING: `include_hook_args?` will be deprecated, use `include_hook_args` option instead"
+          )
+
+          git_hook_args
+
+        Keyword.get(opts, :include_hook_args, false) ->
+          git_hook_args
+
+        true ->
+          []
       end
 
     script_file
@@ -97,10 +107,19 @@ defmodule Mix.Tasks.GitHooks.Run do
     [command | args] = String.split(command, " ")
 
     command_args =
-      if Keyword.get(opts, :include_hook_args?, false) do
-        Enum.concat(args, git_hook_args)
-      else
-        args
+      cond do
+        Keyword.get(opts, :include_hook_args?, false) ->
+          Printer.warn(
+            "WARNING: `include_hook_args?` will be deprecated, use `include_hook_args` option instead"
+          )
+
+          Enum.concat(args, git_hook_args)
+
+        Keyword.get(opts, :include_hook_args, false) ->
+          Enum.concat(args, git_hook_args)
+
+        true ->
+          args
       end
 
     command
