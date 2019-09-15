@@ -1,7 +1,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/qgadrian/elixir_git_hooks/badge.svg?branch=master)](https://coveralls.io/github/qgadrian/elixir_git_hooks?branch=master)
 [![Hex version](https://img.shields.io/hexpm/v/sippet.svg "Hex version")](https://hex.pm/packages/git_hooks)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-9768d1.svg)](https://hexdocs.pm/git_hooks)
-[![Build Status](https://travis-ci.org/qgadrian/metadata_plugs.svg?branch=master)](https://travis-ci.org/qgadrian/elixir_git_hooks.svg?branch=master)
+[![Build Status](https://travis-ci.org/qgadrian/elixir_git_hooks.svg?branch=master)](https://travis-ci.org/qgadrian/elixir_git_hooks.svg?branch=master)
 [![Inline docs](http://inch-ci.org/github/qgadrian/elixir_git_hooks.svg)](http://inch-ci.org/github/qgadrian/elixir_git_hooks)
 
 # GitHooks
@@ -80,24 +80,28 @@ Currently there are supported two configuration options:
 
 ### Example config
 
+In `config/config.exs`
+
 ```elixir
-config :git_hooks,
-  verbose: true,
-  hooks: [
-    pre_commit: [
-      tasks: [
-        "mix format"
-      ]
-    ],
-    pre_push: [
-      verbose: false,
-      tasks: [
-        "mix dialyzer",
-        "mix test",
-        "echo 'success!'"
+if Mix.env() != :prod do
+  config :git_hooks,
+    verbose: true,
+    hooks: [
+      pre_commit: [
+        tasks: [
+          "mix format"
+        ]
+      ],
+      pre_push: [
+        verbose: false,
+        tasks: [
+          "mix dialyzer",
+          "mix test",
+          "echo 'success!'"
+        ]
       ]
     ]
-  ]
+end
 ```
 
 ### Type of tasks
@@ -109,7 +113,7 @@ command you want to run. For example, having `"mix test"` and `{:cmd, "mix
 test"}` in the hook `tasks` will be equivalent.
 
 > If you want to forward the git hook arguments, add the option
-> `include_hook_args?: true`.
+> `include_hook_args: true`.
 
 ```elixir
 config :git_hooks,
@@ -118,7 +122,7 @@ config :git_hooks,
     commit_msg: [
       tasks: [
         {:cmd, "echo 'test'"},
-        {:cmd, "elixir ./priv/test_task.ex", include_hook_args?: true},
+        {:cmd, "elixir ./priv/test_task.ex", include_hook_args: true},
       ]
     ]
   ]
@@ -127,7 +131,7 @@ config :git_hooks,
 #### Executable file
 
 The following configuration uses a script file to be run with a git hook. If you
-want to forward the git hook arguments, add the option `include_hook_args?:
+want to forward the git hook arguments, add the option `include_hook_args:
 true`.
 
 ```elixir
@@ -137,7 +141,7 @@ config :git_hooks,
     commit_msg: [
       tasks: [
         {:file, "./priv/test_script"},
-        {:file, "./priv/test_script_with_args", include_hook_args?: true},
+        {:file, "./priv/test_script_with_args", include_hook_args: true},
       ]
     ]
   ]
