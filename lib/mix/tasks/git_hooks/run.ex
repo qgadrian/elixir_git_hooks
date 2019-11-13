@@ -75,6 +75,8 @@ defmodule Mix.Tasks.GitHooks.Run do
 
   defp run_task({:file, script_file, opts}, git_hook_type, git_hook_args) do
     # TODO remove deprecation in new version
+    env_vars = Keyword.get(opts, :env, [])
+
     args =
       cond do
         Keyword.get(opts, :include_hook_args?, false) ->
@@ -95,7 +97,8 @@ defmodule Mix.Tasks.GitHooks.Run do
     |> Path.absname()
     |> System.cmd(
       args,
-      into: Config.io_stream(git_hook_type)
+      into: Config.io_stream(git_hook_type),
+      env: env_vars
     )
   end
 
@@ -105,6 +108,8 @@ defmodule Mix.Tasks.GitHooks.Run do
 
   defp run_task({:cmd, command, opts}, git_hook_type, git_hook_args) when is_list(opts) do
     [command | args] = String.split(command, " ")
+
+    env_vars = Keyword.get(opts, :env, [])
 
     command_args =
       cond do
@@ -125,7 +130,8 @@ defmodule Mix.Tasks.GitHooks.Run do
     command
     |> System.cmd(
       command_args,
-      into: Config.io_stream(git_hook_type)
+      into: Config.io_stream(git_hook_type),
+      env: env_vars
     )
     |> case do
       {_result, 0} ->
