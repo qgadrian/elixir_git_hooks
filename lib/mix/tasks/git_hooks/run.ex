@@ -31,7 +31,10 @@ defmodule Mix.Tasks.GitHooks.Run do
   command to be executed. In case of `true`, the args will be amended to the
   command. Defaults to `false`.
   """
-  @type run_opts :: [{:include_hook_args, String.t()}]
+  @type run_opts :: [
+          {:include_hook_args, String.t()},
+          {:env, list({String.t(), binary})}
+        ]
 
   @doc """
   Runs a task for a given git hook.
