@@ -85,4 +85,28 @@ defmodule Mix.Tasks.RunTest do
       end)
     end
   end
+
+  describe "Given env vars to the mix git hook task" do
+    test "when running a command the env vars are available" do
+      env = [{"TEST", "test-value"}]
+
+      put_git_hook_config(:pre_commit,
+        tasks: [{:cmd, "env", env: env}],
+        verbose: true
+      )
+
+      assert capture_io(fn -> Run.run(["pre-commit"]) end) =~ "test-value"
+    end
+
+    test "when running a file the env vars are available" do
+      env = [{"TEST", "test-value"}]
+
+      put_git_hook_config(:pre_commit,
+        tasks: [{:file, "priv/test_script", env: env}],
+        verbose: true
+      )
+
+      assert capture_io(fn -> Run.run(["pre-commit"]) end) =~ "test-value"
+    end
+  end
 end
