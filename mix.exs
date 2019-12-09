@@ -3,7 +3,7 @@ defmodule GitHooks.MixProject do
 
   use Mix.Project
 
-  @version "0.3.2"
+  @version "0.3.3"
 
   def project do
     [
@@ -61,7 +61,7 @@ defmodule GitHooks.MixProject do
     [
       {:blankable, "~> 1.0.0"},
       {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev], runtime: false},
+      {:dialyxir, "~> 1.0.0-rc.7", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
       {:inch_ex, ">= 0.0.0", only: :docs},
