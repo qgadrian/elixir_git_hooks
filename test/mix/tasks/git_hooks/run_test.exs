@@ -108,5 +108,19 @@ defmodule Mix.Tasks.RunTest do
 
       assert capture_io(fn -> Run.run(["pre-commit"]) end) =~ "test-value"
     end
+
+    test "when the file returns exits with != 0 the hook exits with != 0" do
+      env = [{"TEST", "test-value"}]
+
+      put_git_hook_config(:pre_commit,
+        tasks: [{:file, "priv/test_script_fail", env: env}],
+        verbose: true
+      )
+
+      capture_io(fn ->
+        # Run.run(["pre-commit"])
+        assert catch_exit(Run.run(["pre-commit"])) == 1
+      end) =~ "Failed"
+    end
   end
 end

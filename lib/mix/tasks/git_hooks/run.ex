@@ -93,6 +93,16 @@ defmodule Mix.Tasks.GitHooks.Run do
       into: Config.io_stream(git_hook_type),
       env: env_vars
     )
+    |> case do
+      {_result, 0} ->
+        Printer.success("`#{script_file}` was successful")
+
+      {result, _} ->
+        if !Config.verbose?(git_hook_type), do: IO.puts(result)
+
+        Printer.error("`#{script_file}` execution failed")
+        error_exit()
+    end
   end
 
   defp run_task({:cmd, command}, git_hook_type, git_hook_args) do
