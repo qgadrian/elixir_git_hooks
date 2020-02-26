@@ -110,7 +110,7 @@ defmodule Mix.Tasks.GitHooks.Run do
   end
 
   defp run_task({:cmd, command, opts}, git_hook_type, git_hook_args) when is_list(opts) do
-    [command | args] = String.split(command, " ")
+    [base_command | args] = String.split(command, " ")
 
     env_vars = Keyword.get(opts, :env, [])
 
@@ -121,7 +121,7 @@ defmodule Mix.Tasks.GitHooks.Run do
         args
       end
 
-    command
+    base_command
     |> System.cmd(
       command_args,
       into: Config.io_stream(git_hook_type),
@@ -129,7 +129,7 @@ defmodule Mix.Tasks.GitHooks.Run do
     )
     |> case do
       {_result, 0} ->
-        Printer.success("`#{command} #{Enum.join(command_args, " ")}` was successful")
+        Printer.success("`#{command}` was successful")
 
       {result, _} ->
         if !Config.verbose?(git_hook_type), do: IO.puts(result)
