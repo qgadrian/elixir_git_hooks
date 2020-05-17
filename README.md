@@ -21,6 +21,7 @@ list](https://git-scm.com/docs/githooks).
   * [Automatic installation](#automatic-installation)
   * [Manual installation](#manual-installation)
 * [Configuration](#configuration)
+  * [Disable auto install](#disable-auto-install)
   * [Example config](#example-config)
   * [Type of tasks](#type-of-tasks)
     * [Command](#command)
@@ -60,6 +61,8 @@ The backup files will have the file extension `.pre_git_hooks_backup`.
 This library will install automatically the configured git hooks in your
 `config.exs` file.
 
+See [configuration](#disable-auto-install) to disable the automatic install.
+
 ### Manual installation
 
 You can manually install the configured git hooks at any time by running:
@@ -78,6 +81,11 @@ Currently there are supported two configuration options:
   * **tasks**: A list of the commands that will be executed when running a git hook. [See types of tasks](#type-of-tasks) for more info.
   * **verbose**: If true, the output of the mix tasks will be visible. This can be configured globally or per git hook.
 
+### Disable auto install
+
+To disable the automatic install of the git hooks set the configuration key `auto_install` to
+`false`.
+
 ### Example config
 
 In `config/config.exs`
@@ -85,6 +93,7 @@ In `config/config.exs`
 ```elixir
 if Mix.env() != :prod do
   config :git_hooks,
+    auto_install: true,
     verbose: true,
     hooks: [
       pre_commit: [
