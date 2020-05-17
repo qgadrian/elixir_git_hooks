@@ -64,7 +64,7 @@ defmodule GitHooks.Config do
   Returns the general verbose configuration.
   """
   @spec verbose?() :: boolean()
-  def verbose?() do
+  def verbose? do
     Application.get_env(:git_hooks, :verbose, false)
   end
 

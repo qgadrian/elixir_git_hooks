@@ -1,6 +1,7 @@
 use Mix.Config
 
 config :git_hooks,
+  auto_install: false,
   hooks: [
     commit_msg: [
       verbose: true,
