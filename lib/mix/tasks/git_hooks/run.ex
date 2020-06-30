@@ -144,8 +144,18 @@ defmodule Mix.Tasks.GitHooks.Run do
       error_exit()
   end
 
-  defp run_task({module, function, _arity}, git_hook_type, git_hook_args) when is_atom(module) do
-    Kernel.apply(module, function, [git_hook_type | git_hook_args])
+  defp run_task({module, function, arity}, git_hook_type, git_hook_args) when is_atom(module) do
+    expected_arity = length(git_hook_args)
+
+    if arity != expected_arity do
+      raise """
+      Invalid #{module}.#{function} arity for #{git_hook_type}, expected #{expected_arity} but got #{
+        arity
+      }. Check the Git hooks documentation to fix the expected parameters.
+      """
+    end
+
+    Kernel.apply(module, function, git_hook_args)
   end
 
   defp run_task(command, git_hook_type, git_hook_args) when is_binary(command) do
@@ -153,9 +163,9 @@ defmodule Mix.Tasks.GitHooks.Run do
   end
 
   defp run_task(task, git_hook_type, _git_hook_args) do
-    raise("""
+    raise """
     Invalid task #{inspect(task)} for hook #{inspect(git_hook_type)}", only String, {:file, ""} or {:cmd, ""} are supported.
-    """)
+    """
   end
 
   @spec get_atom_from_arg(String.t()) :: atom | no_return

@@ -17,7 +17,8 @@ Main features are:
   * Executable files
   * Elixir modules
 * **No limits**: Any git hook is and will be supported out of the box,
- you can [check here the git hooks list](https://git-scm.com/docs/githooks) available.
+ you can [check here the git hooks list](https://git-scm.com/docs/githooks)
+ available.
 
 ## Table of Contents
 
@@ -172,10 +173,9 @@ them as you please.
 It is also possible to use Elixir modules to execute actions for a given git
 hook.
 
-It is recommended the module implement the behaviour `GitHooks` first and then
-add your config as a
+Just add in your config the
 [MFA](https://hexdocs.pm/elixir/typespecs.html#built-in-types) (`{module,
-function, arity}`):
+function, arity}`) definition:
 
 ```elixir
 config :git_hooks,
@@ -189,8 +189,9 @@ config :git_hooks,
   ]
 ```
 
-To see which arguments a git hook receives, [check the git
-documentation](https://git-scm.com/docs/githooks).
+To check how many args you function should expect [check the git
+documentation](https://git-scm.com/docs/githooks) to know which parameters are
+being sent on each hook.
 
 ## Removing a hook
 

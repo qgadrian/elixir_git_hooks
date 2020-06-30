@@ -3,6 +3,12 @@ use Mix.Config
 config :git_hooks,
   auto_install: false,
   hooks: [
+    #prepare_commit_msg: [
+      #verbose: true,
+      #tasks: [
+        #{MyApp.GitHooks.PrepareCommitMsg, :execute, 4}
+      #]
+    #],
     commit_msg: [
       verbose: true,
       tasks: [
