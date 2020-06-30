@@ -72,6 +72,7 @@ defmodule Mix.Tasks.GitHooks.Run do
   @spec run_task(String.t(), atom, git_hook_args()) :: :ok | no_return
   @spec run_task({:file, String.t(), run_opts()}, atom, git_hook_args()) :: :ok | no_return
   @spec run_task({:cmd, String.t(), run_opts()}, atom, git_hook_args()) :: :ok | no_return
+  @spec run_task(mfa(), atom, git_hook_args()) :: :ok | no_return
   defp run_task({:file, script_file}, git_hook_type, git_hook_args) do
     run_task({:file, script_file, []}, git_hook_type, git_hook_args)
   end
@@ -143,15 +144,19 @@ defmodule Mix.Tasks.GitHooks.Run do
       error_exit()
   end
 
+  defp run_task({module, function, _arity}, git_hook_type, git_hook_args) when is_atom(module) do
+    Kernel.apply(module, function, [git_hook_type | git_hook_args])
+  end
+
   defp run_task(command, git_hook_type, git_hook_args) when is_binary(command) do
     run_task({:cmd, command, []}, git_hook_type, git_hook_args)
   end
 
-  defp run_task(task, git_hook_type, _git_hook_args),
-    do:
-      raise("""
-      Invalid task #{inspect(task)} for hook #{inspect(git_hook_type)}", only String, {:file, ""} or {:cmd, ""} are supported.
-      """)
+  defp run_task(task, git_hook_type, _git_hook_args) do
+    raise("""
+    Invalid task #{inspect(task)} for hook #{inspect(git_hook_type)}", only String, {:file, ""} or {:cmd, ""} are supported.
+    """)
+  end
 
   @spec get_atom_from_arg(String.t()) :: atom | no_return
   defp get_atom_from_arg(git_hook_type_arg) do
