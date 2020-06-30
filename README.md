@@ -6,15 +6,22 @@
 
 # GitHooks
 
-Installs [git hooks](https://git-scm.com/docs/githooks) that will run in your
-Elixir project.
+Configure [git hooks](https://git-scm.com/docs/githooks) in your Elixir
+projects.
 
-Any git hook type is supported, [check here the hooks
-list](https://git-scm.com/docs/githooks).
+Main features are:
+
+* **Simplicity**: Automatic or manually install the configured git hook actions.
+* **Flexibility**: You choose what to use to define the git hooks actions:
+  * Bash commands
+  * Executable files
+  * Elixir modules
+* **No limits**: Any git hook is and will be supported out of the box,
+ you can [check here the git hooks list](https://git-scm.com/docs/githooks) available.
 
 ## Table of Contents
 
-<!-- vim-markdown-toc Marked -->
+<!-- vim-markdown-toc GFM -->
 
 * [Installation](#installation)
   * [Backup current hooks](#backup-current-hooks)
@@ -26,6 +33,7 @@ list](https://git-scm.com/docs/githooks).
   * [Type of tasks](#type-of-tasks)
     * [Command](#command)
     * [Executable file](#executable-file)
+    * [Elixir module](#elixir-module)
 * [Removing a hook](#removing-a-hook)
 * [Execution](#execution)
   * [Automatic execution](#automatic-execution)
@@ -51,8 +59,8 @@ mix deps.get && mix deps.compile
 
 ### Backup current hooks
 
-This project will backup automatically your the hook files that are going to be
-overwrite.
+This library will backup automatically your current git hooks before
+overwriting them.
 
 The backup files will have the file extension `.pre_git_hooks_backup`.
 
@@ -158,6 +166,31 @@ config :git_hooks,
 
 The script file executed will receive the arguments from git, so you can use
 them as you please.
+
+#### Elixir module
+
+It is also possible to use Elixir modules to execute actions for a given git
+hook.
+
+It is recommended the module implement the behaviour `GitHooks` first and then
+add your config as a
+[MFA](https://hexdocs.pm/elixir/typespecs.html#built-in-types) (`{module,
+function, arity}`):
+
+```elixir
+config :git_hooks,
+  verbose: true,
+  hooks: [
+    commit_msg: [
+      tasks: [
+        {MyModule, :execute, 2}
+      ]
+    ]
+  ]
+```
+
+To see which arguments a git hook receives, [check the git
+documentation](https://git-scm.com/docs/githooks).
 
 ## Removing a hook
 
