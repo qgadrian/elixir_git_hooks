@@ -39,6 +39,7 @@ defmodule Mix.Tasks.GitHooks.Install do
 
     Printer.info("Installing git hooks...")
 
+    ensure_hooks_folder_exists()
     clean_missing_hooks()
     track_configured_hooks()
 
@@ -111,10 +112,13 @@ defmodule Mix.Tasks.GitHooks.Install do
       Printer.warn(
         "Couldn't find git_hooks.db file, won't be able to restore old backups: #{inspect(error)}"
       )
+  end
 
-      Printer.warn(
-        "Check that you are not missing `.git` folder, otherwise open a ticket at https://github.com/qgadrian/elixir_git_hooks/issues/new"
-      )
+  @spec ensure_hooks_folder_exists() :: any
+  defp ensure_hooks_folder_exists do
+    Project.deps_path()
+    |> Path.join("/../.git/hooks")
+    |> File.mkdir_p()
   end
 
   @spec clean_missing_hooks() :: any
