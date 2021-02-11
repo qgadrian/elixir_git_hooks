@@ -101,6 +101,8 @@ In `config/config.exs`
 
 ```elixir
 if Mix.env() != :prod do
+  use Mix.Config
+  
   config :git_hooks,
     auto_install: true,
     verbose: true,
