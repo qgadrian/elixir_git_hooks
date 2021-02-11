@@ -48,7 +48,7 @@ Add to dependencies:
 
 ```elixir
 def deps do
-  [{:git_hooks, "~> 0.5.0", only: [:test, :dev], runtime: false}]
+  [{:git_hooks, "~> 0.5.2", only: [:test, :dev], runtime: false}]
 end
 ```
 
@@ -101,6 +101,8 @@ In `config/config.exs`
 
 ```elixir
 if Mix.env() != :prod do
+  use Mix.Config
+
   config :git_hooks,
     auto_install: true,
     verbose: true,
