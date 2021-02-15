@@ -100,9 +100,10 @@ To disable the automatic install of the git hooks set the configuration key `aut
 In `config/config.exs`
 
 ```elixir
-if Mix.env() != :prod do
-  use Mix.Config
+use Mix.Config
 
+# somewhere in your config file
+if Mix.env() != :prod do
   config :git_hooks,
     auto_install: true,
     verbose: true,
