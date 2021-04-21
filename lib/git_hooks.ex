@@ -16,12 +16,18 @@ defmodule GitHooks do
   alias GitHooks.Tasks.Mix, as: MixTask
   alias Mix.Tasks.GitHooks.Run
 
-  @spec new_task(String.t(), git_hook_type(), git_hook_args()) :: :ok | no_return
-  @spec new_task({:file, String.t(), Run.run_opts()}, git_hook_type(), Run.git_hook_args()) ::
-          :ok | no_return
-  @spec new_task({:cmd, String.t(), Run.run_opts()}, git_hook_type(), git_hook_args()) ::
-          :ok | no_return
-  @spec new_task(mfa(), git_hook_type(), git_hook_args()) :: :ok | no_return
+  @typep allowed_configs ::
+           {:file, String.t()}
+           | {:file, String.t(), Run.run_opts()}
+           | {:cmd, String.t()}
+           | {:cmd, String.t(), Run.run_opts()}
+           | {:mix_task, Mix.Task.task_name()}
+           | {:mix_task, Mix.Task.task_name(), [any]}
+           | mfa()
+
+  @typep task :: Cmd.t() | File.t() | MFA.t() | MixTask.t()
+
+  @spec new_task(allowed_configs(), git_hook_type(), git_hook_args()) :: task() | no_return
   def new_task({:file, path}, git_hook_type, git_hook_args) do
     File.new({:file, path, []}, git_hook_type, git_hook_args)
   end
