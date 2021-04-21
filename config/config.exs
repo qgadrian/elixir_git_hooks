@@ -19,15 +19,15 @@ config :git_hooks,
     pre_commit: [
       verbose: true,
       tasks: [
-        "mix format --check-formatted --dry-run",
-        "mix credo"
+        {:mix_task, :format, ["--check-formatted", "--dry-run"]},
+        {:mix_task, :credo}
       ]
     ],
     pre_push: [
       verbose: true,
       tasks: [
-        "mix dialyzer",
-        "mix coveralls"
+        {:mix_task, :dialyzer},
+        {:mix_task, :coveralls}
       ]
     ]
   ]
