@@ -22,9 +22,6 @@ defmodule Mix.Tasks.GitHooks.Run do
   alias GitHooks.Config
   alias GitHooks.Printer
 
-  @type git_hook_type :: atom
-  @type git_hook_args :: list(String.t())
-
   @typedoc """
   Run options:
 
@@ -64,11 +61,14 @@ defmodule Mix.Tasks.GitHooks.Run do
     |> run_tasks(args)
   end
 
-  @spec run_tasks({atom, list(String.t())}, git_hook_args()) :: :ok
+  @spec run_tasks({atom, list(GitHooks.allowed_configs())}, GitHooks.git_hook_args()) ::
+          :ok | no_return
   defp run_tasks({git_hook_type, tasks}, git_hook_args) do
     Enum.each(tasks, &run_task(&1, git_hook_type, git_hook_args))
   end
 
+  @spec run_task(GitHooks.allowed_configs(), GitHooks.git_hook_type(), GitHooks.git_hook_args()) ::
+          :ok | no_return
   defp run_task(task_config, git_hook_type, git_hook_args) do
     task_config
     |> GitHooks.new_task(git_hook_type, git_hook_args)
@@ -108,5 +108,5 @@ defmodule Mix.Tasks.GitHooks.Run do
   defp exit_if_failed(false), do: error_exit()
 
   @spec error_exit(non_neg_integer) :: no_return
-  defp error_exit(error_code \\ 1), do: exit(error_code)
+  defp error_exit(error_code \\ {:shutdown, 1}), do: exit(error_code)
 end

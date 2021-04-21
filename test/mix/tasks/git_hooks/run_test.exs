@@ -86,15 +86,15 @@ defmodule Mix.Tasks.RunTest do
   end
 
   describe "Given args for the mix git hook task" do
-    test "when no git hook type is provided then the process exits with 1" do
+    test "when no git hook type is provided then the process exits with {:shutdown, 1}" do
       capture_io(fn ->
-        assert catch_exit(Run.run([])) == 1
+        assert catch_exit(Run.run([])) == {:shutdown, 1}
       end)
     end
 
-    test "when the git hook type is not supported then the process exits with 1" do
+    test "when the git hook type is not supported then the process exits with {:shutdown, 1}" do
       capture_io(fn ->
-        assert catch_exit(Run.run(["invalid_hook"])) == 1
+        assert catch_exit(Run.run(["invalid_hook"])) == {:shutdown, 1}
       end)
     end
 
@@ -110,7 +110,7 @@ defmodule Mix.Tasks.RunTest do
       put_git_hook_config(:pre_commit, tasks: [{:cmd, "this_task_is_going_to_fail"}])
 
       capture_io(fn ->
-        assert catch_exit(Run.run(["pre-commit"])) == 1
+        assert catch_exit(Run.run(["pre-commit"])) == {:shutdown, 1}
       end)
     end
 
@@ -161,7 +161,7 @@ defmodule Mix.Tasks.RunTest do
 
       capture_io(fn ->
         # Run.run(["pre-commit"])
-        assert catch_exit(Run.run(["pre-commit"])) == 1
+        assert catch_exit(Run.run(["pre-commit"])) == {:shutdown, 1}
       end) =~ "Failed"
     end
   end
