@@ -29,11 +29,13 @@ defmodule Mix.Tasks.RunTest do
 
     test "when it is a MFA then the module function it called" do
       put_git_hook_config(:pre_commit,
-        tasks: [{GitHooks.TestSupport.MFATest, :execute, 0}],
+        tasks: [{GitHooks.TestSupport.MFADummy, :execute, 0}],
         verbose: true
       )
 
-      assert Run.run(["pre-commit"]) == :ok
+      capture_io(fn ->
+        assert Run.run(["pre-commit"]) == :ok
+      end)
     end
 
     test "when the arity of the MFA is not the same as the git hook raises an error" do
@@ -45,9 +47,11 @@ defmodule Mix.Tasks.RunTest do
       expect_error_message =
         "Invalid Elixir.GitHooks.TestSupport.MFATest.execute arity for pre_commit, expected 0 but got 5. Check the Git hooks documentation to fix the expected parameters.\n"
 
-      assert_raise RuntimeError, expect_error_message, fn ->
-        Run.run(["pre-commit"])
-      end
+      capture_io(fn ->
+        assert_raise RuntimeError, expect_error_message, fn ->
+          Run.run(["pre-commit"])
+        end
+      end)
     end
 
     test "when it is a string then the command it's executed" do
@@ -65,7 +69,7 @@ defmodule Mix.Tasks.RunTest do
       )
 
       capture_io(fn ->
-        assert_raise RuntimeError, fn -> Run.run(["pre-commit"]) end
+        assert_raise FunctionClauseError, fn -> Run.run(["pre-commit"]) end
       end)
     end
 
@@ -78,14 +82,14 @@ defmodule Mix.Tasks.RunTest do
       assert capture_io(fn -> Run.run(["pre-commit"]) end) =~ "`mix help clean` was successful"
     end
 
-    test "when verbose is enabled the command and args print in the error message" do
+    test "when verbose mode is enabled the command and args print in the error message" do
       put_git_hook_config(:pre_commit,
         tasks: [{:cmd, "false foo bar"}],
         verbose: true
       )
 
       assert capture_io(fn -> catch_exit(Run.run(["pre-commit"])) end) =~
-               "pre_commit failed on `false foo bar`"
+               "`pre_commit`: `false foo bar` execution failed"
     end
   end
 

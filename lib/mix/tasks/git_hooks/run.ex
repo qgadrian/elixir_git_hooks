@@ -61,7 +61,6 @@ defmodule Mix.Tasks.GitHooks.Run do
     |> Printer.info("Running hooks for ", append_first_arg: true)
     |> Config.tasks()
     |> run_tasks(args)
-    |> success_exit()
   end
 
   @spec run_tasks({atom, list(String.t())}, git_hook_args()) :: :ok
@@ -69,103 +68,13 @@ defmodule Mix.Tasks.GitHooks.Run do
     Enum.each(tasks, &run_task(&1, git_hook_type, git_hook_args))
   end
 
-  @spec run_task(String.t(), atom, git_hook_args()) :: :ok | no_return
-  @spec run_task({:file, String.t(), run_opts()}, atom, git_hook_args()) :: :ok | no_return
-  @spec run_task({:cmd, String.t(), run_opts()}, atom, git_hook_args()) :: :ok | no_return
-  @spec run_task(mfa(), atom, git_hook_args()) :: :ok | no_return
-  defp run_task({:file, script_file}, git_hook_type, git_hook_args) do
-    run_task({:file, script_file, []}, git_hook_type, git_hook_args)
-  end
-
-  defp run_task({:file, script_file, opts}, git_hook_type, git_hook_args) do
-    env_vars = Keyword.get(opts, :env, [])
-
-    args =
-      if Keyword.get(opts, :include_hook_args, false) do
-        git_hook_args
-      else
-        []
-      end
-
-    script_file
-    |> Path.absname()
-    |> System.cmd(
-      args,
-      into: Config.io_stream(git_hook_type),
-      env: env_vars
-    )
-    |> case do
-      {_result, 0} ->
-        Printer.success("`#{script_file}` was successful")
-
-      {result, _} ->
-        if !Config.verbose?(git_hook_type), do: IO.puts(result)
-
-        Printer.error("`#{script_file}` execution failed")
-        error_exit()
-    end
-  end
-
-  defp run_task({:cmd, command}, git_hook_type, git_hook_args) do
-    run_task({:cmd, command, []}, git_hook_type, git_hook_args)
-  end
-
-  defp run_task({:cmd, command, opts}, git_hook_type, git_hook_args) when is_list(opts) do
-    [base_command | args] = String.split(command, " ")
-
-    env_vars = Keyword.get(opts, :env, [])
-
-    command_args =
-      if Keyword.get(opts, :include_hook_args, false) do
-        Enum.concat(args, git_hook_args)
-      else
-        args
-      end
-
-    base_command
-    |> System.cmd(
-      command_args,
-      into: Config.io_stream(git_hook_type),
-      env: env_vars
-    )
-    |> case do
-      {_result, 0} ->
-        Printer.success("`#{command}` was successful")
-
-      {result, _} ->
-        if !Config.verbose?(git_hook_type), do: IO.puts(result)
-
-        Printer.error("#{Atom.to_string(git_hook_type)} failed on `#{command}`")
-        error_exit()
-    end
-  rescue
-    error ->
-      Printer.error("Error executing the command: #{inspect(error)}")
-      error_exit()
-  end
-
-  defp run_task({module, function, arity}, git_hook_type, git_hook_args) when is_atom(module) do
-    expected_arity = length(git_hook_args)
-
-    if arity != expected_arity do
-      raise """
-      Invalid #{module}.#{function} arity for #{git_hook_type}, expected #{expected_arity} but got #{
-        arity
-      }. Check the Git hooks documentation to fix the expected parameters.
-      """
-    end
-
-    Kernel.apply(module, function, git_hook_args)
-  end
-
-  defp run_task(command, git_hook_type, git_hook_args) when is_binary(command) do
-    run_task({:cmd, command, []}, git_hook_type, git_hook_args)
-  end
-
-  defp run_task(task, git_hook_type, _git_hook_args) do
-    raise """
-    Invalid task #{inspect(task)} for hook #{inspect(git_hook_type)}", only String, {:file, ""} or {:cmd, ""} are supported.
-    """
+  defp run_task(task_config, git_hook_type, git_hook_args) do
+    task_config
+    |> GitHooks.new_task(git_hook_type, git_hook_args)
+    |> GitHooks.Task.run()
+    |> GitHooks.Task.print_result()
+    |> GitHooks.Task.success?()
+    |> exit_if_failed()
   end
 
   @spec get_atom_from_arg(String.t()) :: atom | no_return
@@ -193,8 +102,9 @@ defmodule Mix.Tasks.GitHooks.Run do
     git_hook_type
   end
 
-  @spec success_exit(any) :: :ok
-  defp success_exit(_), do: :ok
+  @spec exit_if_failed(is_success :: boolean) :: :ok | no_return
+  defp exit_if_failed(true), do: :ok
+  defp exit_if_failed(false), do: error_exit()
 
   @spec error_exit(non_neg_integer) :: no_return
   defp error_exit(error_code \\ 1), do: exit(error_code)
