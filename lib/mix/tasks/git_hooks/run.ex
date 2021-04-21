@@ -22,7 +22,8 @@ defmodule Mix.Tasks.GitHooks.Run do
   alias GitHooks.Config
   alias GitHooks.Printer
 
-  @opaque git_hook_args :: list(String.t())
+  @type git_hook_type :: atom
+  @type git_hook_args :: list(String.t())
 
   @typedoc """
   Run options:

@@ -1,6 +1,47 @@
 defmodule GitHooks.Tasks.MFA do
+  @moduledoc """
+  Represents a `{module, function, arity}` (a.k.a. `mfa`) that will be evaluated
+  by the Kernel module.
+
+  An `mfa` should be configured as `{module, function, arity}`. The function of
+  the module **will always receive the hook arguments** and the arity is
+  expected to match the same number to avoid any unexpected behaviour.
+
+  See [Elixir documentation](https://hexdocs.pm/elixir/typespecs.html#types-and-their-syntax) for more information.
+
+  For example:
+
+  ```elixir
+  config :git_hooks,
+    hooks: [
+      pre_commit: [
+        {MyModule, :my_function, 1}
+      ]
+    ]
+  ```
+  """
+
+  @typedoc """
+  Represents an `mfa` to be executed.
+  """
+  @type t :: %__MODULE__{
+          module: atom,
+          function: atom,
+          args: [any],
+          result: term
+        }
+
   defstruct [:module, :function, args: [], result: nil]
 
+  @doc """
+  Creates a new `mfa` struct.
+
+  ### Example
+
+      iex> #{__MODULE__}.new({MyModule, :my_function, 1}, :pre_commit, ["commit message"])
+      %#{__MODULE__}{module: MyModule, function: :my_function, args: ["commit message"]}
+  """
+  @spec new(mfa(), GitHooks.git_hook_type(), GitHooks.git_hook_args()) :: __MODULE__.t()
   def new({module, function, arity}, git_hook_type, git_hook_args) do
     expected_arity = length(git_hook_args)
 

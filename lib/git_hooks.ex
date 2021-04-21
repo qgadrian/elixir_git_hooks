@@ -7,18 +7,21 @@ defmodule GitHooks do
     Install.run(["--quiet"])
   end
 
-  alias Mix.Tasks.GitHooks.Run
-  alias GitHooks.Tasks.File
+  @type git_hook_type :: atom
+  @type git_hook_args :: list(String.t())
+
   alias GitHooks.Tasks.Cmd
+  alias GitHooks.Tasks.File
   alias GitHooks.Tasks.MFA
   alias GitHooks.Tasks.Mix, as: MixTask
+  alias Mix.Tasks.GitHooks.Run
 
-  @opaque git_hook_args :: list(String.t())
-
-  @spec new_task(String.t(), atom, git_hook_args()) :: :ok | no_return
-  @spec new_task({:file, String.t(), Run.run_opts()}, atom, git_hook_args()) :: :ok | no_return
-  @spec new_task({:cmd, String.t(), Run.run_opts()}, atom, git_hook_args()) :: :ok | no_return
-  @spec new_task(mfa(), atom, git_hook_args()) :: :ok | no_return
+  @spec new_task(String.t(), git_hook_type(), git_hook_args()) :: :ok | no_return
+  @spec new_task({:file, String.t(), Run.run_opts()}, git_hook_type(), Run.git_hook_args()) ::
+          :ok | no_return
+  @spec new_task({:cmd, String.t(), Run.run_opts()}, git_hook_type(), git_hook_args()) ::
+          :ok | no_return
+  @spec new_task(mfa(), git_hook_type(), git_hook_args()) :: :ok | no_return
   def new_task({:file, path}, git_hook_type, git_hook_args) do
     File.new({:file, path, []}, git_hook_type, git_hook_args)
   end
@@ -39,7 +42,11 @@ defmodule GitHooks do
     Cmd.new_from_string(command, git_hook_type, git_hook_args)
   end
 
-  def new_task({:mix_task, _task} = mix_task_config, _git_hook_type, _git_hook_args) do
+  def new_task({:mix_task, task}, _git_hook_type, _git_hook_args) do
+    MixTask.new({:mix_task, task, []})
+  end
+
+  def new_task({:mix_task, _task, _args} = mix_task_config, _git_hook_type, _git_hook_args) do
     MixTask.new(mix_task_config)
   end
 

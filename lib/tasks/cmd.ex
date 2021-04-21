@@ -1,4 +1,34 @@
 defmodule GitHooks.Tasks.Cmd do
+  @moduledoc """
+  Represents a command that will be executed as a git hook task.
+
+  A command should be configured as `{:cmd, command, opts}`, being `opts` an
+  optional configuration.
+
+  For example:
+
+  ```elixir
+  config :git_hooks,
+    hooks: [
+      pre_commit: [
+        {:cmd, "ls -lisa", include_hook_args: true}
+      ]
+    ]
+  ```
+  """
+
+  @typedoc """
+  Represents a `command` to be executed.
+  """
+  @type t :: %__MODULE__{
+          original_command: String.t(),
+          command: String.t(),
+          args: [any],
+          env: [{String.t(), String.t()}],
+          git_hook_type: atom,
+          result: term
+        }
+
   defstruct [:original_command, :command, :args, :env, :git_hook_type, result: nil]
 
   @deprecated "Commands as string won't be supported and will be deleted in future versions"
@@ -6,6 +36,32 @@ defmodule GitHooks.Tasks.Cmd do
     new({:cmd, command, []}, git_hook_type, git_hook_args)
   end
 
+  @doc """
+  Creates a new `cmd` struct that will execute a command.
+
+  This function expects a tuple or triple with `:cmd`, the command to execute
+  and the opts.
+
+  ### Options
+
+  * `include_hook_args`: Whether the git options will be passed as argument when
+  executing the file. You will need to check [which arguments are being sent by each git hook](https://git-scm.com/docs/githooks).
+  * `env`: The environment variables that will be set in the execution context of the file.
+
+  ### Example
+
+      iex> #{__MODULE__}.new({:cmd, "ls -l", env: [{"var", "test"}], include_hook_args: true}, :pre_commit, ["commit message"])
+      %#{__MODULE__}{command: "ls", original_command: "ls -l", args: ["-l", "commit message"], env: [{"var", "test"}], git_hook_type: :pre_commit}
+
+      iex> #{__MODULE__}.new({:cmd, "ls", include_hook_args: false}, :pre_commit, ["commit message"])
+      %#{__MODULE__}{command: "ls", original_command: "ls", args: [], env: [], git_hook_type: :pre_commit}
+  """
+  @spec new(
+          {:cmd, command :: String.t(), [any]},
+          GitHooks.git_hook_type(),
+          GitHooks.git_hook_args()
+        ) ::
+          __MODULE__.t()
   def new({:cmd, original_command, opts}, git_hook_type, git_hook_args) when is_list(opts) do
     [base_command | args] = String.split(original_command, " ")
 
