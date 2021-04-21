@@ -38,10 +38,6 @@ defmodule GitHooks do
     Cmd.new(cmd, git_hook_type, git_hook_args)
   end
 
-  def new_task(command, git_hook_type, git_hook_args) when is_binary(command) do
-    Cmd.new_from_string(command, git_hook_type, git_hook_args)
-  end
-
   def new_task({:mix_task, task}, _git_hook_type, _git_hook_args) do
     MixTask.new({:mix_task, task, []})
   end
@@ -56,7 +52,7 @@ defmodule GitHooks do
 
   def new_task(task_config, git_hook_type, _git_hook_args) do
     raise """
-    Invalid task #{inspect(task_config)} for hook #{inspect(git_hook_type)}", please check documentation.
+    Invalid task `#{inspect(task_config)}` for hook `#{inspect(git_hook_type)}`, please check documentation.
     """
   end
 end

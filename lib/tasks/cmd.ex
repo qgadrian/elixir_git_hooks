@@ -31,11 +31,6 @@ defmodule GitHooks.Tasks.Cmd do
 
   defstruct [:original_command, :command, :args, :env, :git_hook_type, result: nil]
 
-  @deprecated "Commands as string won't be supported and will be deleted in future versions"
-  def new_from_string(command, git_hook_type, git_hook_args) when is_binary(command) do
-    new({:cmd, command, []}, git_hook_type, git_hook_args)
-  end
-
   @doc """
   Creates a new `cmd` struct that will execute a command.
 

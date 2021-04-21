@@ -54,14 +54,6 @@ defmodule Mix.Tasks.RunTest do
       end)
     end
 
-    test "when it is a string then the command it's executed" do
-      put_git_hook_config(:pre_commit, tasks: ["echo 'test string command'"], verbose: true)
-
-      assert capture_io(fn ->
-               assert Run.run(["pre-commit"]) == :ok
-             end) =~ "test string command"
-    end
-
     test "when the config is unknown then an error is raised" do
       put_git_hook_config(:pre_commit,
         tasks: [{:cmd, "echo 'test string command'", :make_it_fail}],
@@ -107,7 +99,7 @@ defmodule Mix.Tasks.RunTest do
     end
 
     test "when the git hook it's supported then it's executed and the task returns :ok" do
-      put_git_hook_config(:pre_commit, tasks: ["mix help test"], verbose: true)
+      put_git_hook_config(:pre_commit, tasks: [{:mix_task, :help, ["test"]}], verbose: true)
 
       capture_io(fn ->
         assert Run.run(["pre-commit"]) == :ok
@@ -115,10 +107,23 @@ defmodule Mix.Tasks.RunTest do
     end
 
     test "when a mix task of the git hook fails then it's executed and the task exits with 0" do
-      put_git_hook_config(:pre_commit, tasks: ["this_task_is_going_to_fail"])
+      put_git_hook_config(:pre_commit, tasks: [{:cmd, "this_task_is_going_to_fail"}])
 
       capture_io(fn ->
         assert catch_exit(Run.run(["pre-commit"])) == 1
+      end)
+    end
+
+    test "when then config is unknown it prints an error" do
+      put_git_hook_config(:pre_commit, tasks: ["this_is_an_unsupported_config"])
+
+      expect_error_message =
+        "Invalid task `\"this_is_an_unsupported_config\"` for hook `:pre_commit`, please check documentation.\n"
+
+      capture_io(fn ->
+        assert_raise RuntimeError, expect_error_message, fn ->
+          Run.run(["pre-commit"])
+        end
       end)
     end
   end
