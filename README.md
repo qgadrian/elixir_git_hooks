@@ -32,6 +32,7 @@ Main features are:
   * [Disable auto install](#disable-auto-install)
   * [Example config](#example-config)
   * [Type of tasks](#type-of-tasks)
+    * [Mix task](#mix-task)
     * [Command](#command)
     * [Executable file](#executable-file)
     * [Elixir module](#elixir-module)
@@ -126,6 +127,31 @@ end
 ```
 
 ### Type of tasks
+
+> For more information, check the [module
+> documentation](https://hexdocs.pm/git_hooks) for each of the different
+> supported tasks.
+
+#### Mix task
+
+This is the preferred option to run mix tasks, as it will provide the best
+execution feedback.
+
+Just add in your config the mix tasks you want to run. You can also set the args
+to be used by the mix task:
+
+```elixir
+config :git_hooks,
+  verbose: true,
+  hooks: [
+    commit_msg: [
+      tasks: [
+        {:mix_task, :test},
+        {:mix_task, :format, ["--dry-run"]}
+      ]
+    ]
+  ]
+```
 
 #### Command
 
