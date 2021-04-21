@@ -61,17 +61,14 @@ defimpl GitHooks.Task, for: GitHooks.Tasks.Mix do
     Map.put(mix_task, :result, result)
   end
 
-  def success?(%MixTask{result: :ok}), do: true
-  def success?(%MixTask{result: _}), do: false
-
-  def print_result(%MixTask{task: task, result: :ok} = mix_task) do
-    Printer.success("`#{task}` was successful")
-
-    mix_task
-  end
+  # Mix tasks always raise an error if they are not success, at the moment does
+  # not seems that handling the result is needed. Also, handling the result to
+  # check the success of a task is almost imposible, as it will depend on each
+  # implementation.
+  def success?(%MixTask{result: _}), do: true
 
   def print_result(%MixTask{task: task, result: _} = mix_task) do
-    Printer.error("`#{task}` execution failed")
+    Printer.success("`#{task}` was successful")
 
     mix_task
   end
