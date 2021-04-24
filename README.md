@@ -49,7 +49,7 @@ Add to dependencies:
 
 ```elixir
 def deps do
-  [{:git_hooks, "~> 0.6.0", only: [:test, :dev], runtime: false}]
+  [{:git_hooks, "~> 0.6.1", only: [:test, :dev], runtime: false}]
 end
 ```
 
@@ -118,7 +118,7 @@ if Mix.env() != :prod do
         verbose: false,
         tasks: [
           {:cmd, "mix dialyzer"},
-          {:cmd, "mix test"},
+          {:cmd, "mix test --color"},
           {:cmd, "echo 'success!'"}
         ]
       ]
