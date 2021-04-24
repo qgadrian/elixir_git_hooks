@@ -55,6 +55,19 @@ defimpl GitHooks.Task, for: GitHooks.Tasks.Mix do
   alias GitHooks.Tasks.Mix, as: MixTask
   alias GitHooks.Printer
 
+  def run(%MixTask{task: :test, args: args} = mix_task, _opts) do
+    args =
+      args
+      |> Kernel.++(["--color"])
+      |> Enum.join(" ")
+
+    Mix.Shell.cmd("mix test #{args}", [], fn data ->
+      IO.write(data)
+    end)
+
+    Map.put(mix_task, :result, :ok)
+  end
+
   def run(%MixTask{task: task, args: args} = mix_task, _opts) do
     result = Mix.Task.run(task, args)
 
