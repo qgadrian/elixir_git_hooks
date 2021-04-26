@@ -56,16 +56,16 @@ defimpl GitHooks.Task, for: GitHooks.Tasks.Mix do
   alias GitHooks.Printer
 
   def run(%MixTask{task: :test, args: args} = mix_task, _opts) do
-    args =
-      args
-      |> Kernel.++(["--color"])
-      |> Enum.join(" ")
+    args = ["test" | args] ++ ["--color"]
 
-    Mix.Shell.cmd("mix test #{args}", [], fn data ->
-      IO.write(data)
-    end)
+    {_, result} =
+      System.cmd(
+        "mix",
+        args,
+        into: IO.stream(:stdio, :line)
+      )
 
-    Map.put(mix_task, :result, :ok)
+    Map.put(mix_task, :result, result)
   end
 
   def run(%MixTask{task: task, args: args} = mix_task, _opts) do
@@ -78,7 +78,17 @@ defimpl GitHooks.Task, for: GitHooks.Tasks.Mix do
   # not seems that handling the result is needed. Also, handling the result to
   # check the success of a task is almost imposible, as it will depend on each
   # implementation.
+  #
+  # XXX Since tests runs on the command, if they fail then this task is
+  # considered failed.
+  def success?(%MixTask{result: 1}), do: false
   def success?(%MixTask{result: _}), do: true
+
+  def print_result(%MixTask{task: task, result: 1} = mix_task) do
+    Printer.error("`#{task}` failed")
+
+    mix_task
+  end
 
   def print_result(%MixTask{task: task, result: _} = mix_task) do
     Printer.success("`#{task}` was successful")
