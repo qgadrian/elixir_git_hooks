@@ -37,10 +37,11 @@ defmodule GitHooks.Tasks.Mix do
   This function expects a tuple or triple with `:mix_task`, the task name and
   the task args.
 
-  ### Example
+  ### Examples
 
       iex> #{__MODULE__}.new({:mix_task, :test, ["--failed"]})
       %#{__MODULE__}{task: :test, args: ["--failed"]}
+
   """
   @spec new({:mix_task, Mix.Task.task_name(), [any]} | Mix.Task.task_name()) :: __MODULE__.t()
   def new({:mix_task, task, args}) do
@@ -76,7 +77,7 @@ defimpl GitHooks.Task, for: GitHooks.Tasks.Mix do
 
   # Mix tasks always raise an error if they are not success, at the moment does
   # not seems that handling the result is needed. Also, handling the result to
-  # check the success of a task is almost imposible, as it will depend on each
+  # check the success of a task is almost impossible, as it will depend on each
   # implementation.
   #
   # XXX Since tests runs on the command, if they fail then this task is

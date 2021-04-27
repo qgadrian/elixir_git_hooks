@@ -3,6 +3,7 @@ defmodule GitHooks.MixProject do
 
   use Mix.Project
 
+  @source_url "https://github.com/qgadrian/elixir_git_hooks"
   @version "0.6.2"
 
   def project do
@@ -12,17 +13,10 @@ defmodule GitHooks.MixProject do
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
-      package: package(),
-      description: description(),
-      docs: [
-        source_ref: "v#{@version}",
-        main: "readme",
-        extra_section: "README",
-        formatters: ["html", "epub"],
-        extras: extras()
-      ],
-      aliases: aliases(),
       deps: deps(),
+      package: package(),
+      docs: docs(),
+      aliases: aliases(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
@@ -46,15 +40,14 @@ defmodule GitHooks.MixProject do
   defp package do
     [
       name: "git_hooks",
-      files: ["lib", "priv", "mix.exs", "README*"],
+      description: "Add git hooks to your Elixir projects",
+      files: ["lib", "priv", "mix.exs", "README*", "LICENSE*", "CODE_OF_CONDUCT*"],
       maintainers: ["Adrián Quintás"],
       licenses: ["MIT"],
-      links: %{"Github" => "https://github.com/qgadrian/elixir_git_hooks"}
+      links: %{
+        "GitHub" => @source_url
+      }
     ]
-  end
-
-  defp description do
-    "Add git hooks to your Elixir projects"
   end
 
   defp deps do
@@ -62,7 +55,7 @@ defmodule GitHooks.MixProject do
       {:blankable, "~> 1.0.0"},
       {:credo, "~> 1.5.0", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.1.0", only: [:dev], runtime: false},
-      {:ex_doc, "~> 0.21", only: :dev, runtime: false},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
       {:inch_ex, ">= 0.0.0", only: :docs},
       {:recase, "~> 0.7.0"}
@@ -77,9 +70,17 @@ defmodule GitHooks.MixProject do
     ]
   end
 
-  defp extras do
+  defp docs do
     [
-      "README.md"
+      extras: [
+        {:"CODE_OF_CONDUCT.md", [title: "Code of Conduct"]},
+        {:LICENSE, [title: "License"]},
+        "README.md"
+      ],
+      main: "readme",
+      source_url: @source_url,
+      source_ref: "v#{@version}",
+      formatters: ["html"]
     ]
   end
 end

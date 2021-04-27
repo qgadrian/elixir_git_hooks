@@ -43,13 +43,14 @@ defmodule GitHooks.Tasks.Cmd do
   executing the file. You will need to check [which arguments are being sent by each git hook](https://git-scm.com/docs/githooks).
   * `env`: The environment variables that will be set in the execution context of the file.
 
-  ### Example
+  ### Examples
 
       iex> #{__MODULE__}.new({:cmd, "ls -l", env: [{"var", "test"}], include_hook_args: true}, :pre_commit, ["commit message"])
       %#{__MODULE__}{command: "ls", original_command: "ls -l", args: ["-l", "commit message"], env: [{"var", "test"}], git_hook_type: :pre_commit}
 
       iex> #{__MODULE__}.new({:cmd, "ls", include_hook_args: false}, :pre_commit, ["commit message"])
       %#{__MODULE__}{command: "ls", original_command: "ls", args: [], env: [], git_hook_type: :pre_commit}
+
   """
   @spec new(
           {:cmd, command :: String.t(), [any]},
