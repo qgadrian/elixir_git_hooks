@@ -8,11 +8,14 @@ defmodule Mix.Tasks.GitHooks.Install do
   with the extension `.pre_git_hooks_backup`.
 
   ## Command line options
-    * `--quiet` - disables the output of the files that are beeing copied/backed up
+    * `--quiet` - disables the output of the files that are being copied/backed up
 
   To manually install the git hooks run:
 
-    `mix git_hooks.install`
+  ```elixir
+  mix git_hooks.install`
+  ```
+
   """
 
   use Mix.Task

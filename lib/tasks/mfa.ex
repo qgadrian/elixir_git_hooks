@@ -36,10 +36,11 @@ defmodule GitHooks.Tasks.MFA do
   @doc """
   Creates a new `mfa` struct.
 
-  ### Example
+  ### Examples
 
       iex> #{__MODULE__}.new({MyModule, :my_function, 1}, :pre_commit, ["commit message"])
       %#{__MODULE__}{module: MyModule, function: :my_function, args: ["commit message"]}
+
   """
   @spec new(mfa(), GitHooks.git_hook_type(), GitHooks.git_hook_args()) :: __MODULE__.t()
   def new({module, function, arity}, git_hook_type, git_hook_args) do

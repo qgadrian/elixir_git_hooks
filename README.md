@@ -49,7 +49,9 @@ Add to dependencies:
 
 ```elixir
 def deps do
-  [{:git_hooks, "~> 0.6.2", only: [:dev], runtime: false}]
+  [
+    {:git_hooks, "~> 0.6.2", only: [:dev], runtime: false}
+  ]
 end
 ```
 
@@ -251,3 +253,9 @@ It is also possible to run all the configured hooks:
 ```bash
 mix git_hooks.run all
 ```
+
+## Copyright and License
+
+Copyright (c) 2018 Adrián Quintás
+
+Source code is released under [the MIT license](./LICENSE).
