@@ -42,6 +42,8 @@ defmodule Mix.Tasks.GitHooks.Install do
 
     Printer.info("Installing git hooks...")
 
+    mix_path = Config.mix_path()
+
     ensure_hooks_folder_exists()
     clean_missing_hooks()
     track_configured_hooks()
@@ -58,7 +60,9 @@ defmodule Mix.Tasks.GitHooks.Install do
             |> Path.join("/../.git/hooks/#{git_hook_atom_as_kebab_string}")
 
           target_file_body =
-            String.replace(body, "$git_hook", git_hook_atom_as_string, global: true)
+            body
+            |> String.replace("$git_hook", git_hook_atom_as_string)
+            |> String.replace("$mix_path", mix_path)
 
           unless opts[:quiet] || !Config.verbose?() do
             Printer.info(

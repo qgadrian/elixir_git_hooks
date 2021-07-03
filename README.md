@@ -29,7 +29,9 @@ Main features are:
   * [Automatic installation](#automatic-installation)
   * [Manual installation](#manual-installation)
 * [Configuration](#configuration)
-  * [Disable auto install](#disable-auto-install)
+  * [Mix path](#mix-path)
+  * [Auto install](#auto-install)
+  * [Hook configuration](#hook-configuration)
   * [Example config](#example-config)
   * [Type of tasks](#type-of-tasks)
     * [Mix task](#mix-task)
@@ -40,6 +42,7 @@ Main features are:
 * [Execution](#execution)
   * [Automatic execution](#automatic-execution)
   * [Manual execution](#manual-execution)
+* [Copyright and License](#copyright-and-license)
 
 <!-- vim-markdown-toc -->
 
@@ -85,6 +88,25 @@ mix git_hooks.install
 
 ## Configuration
 
+### Mix path
+
+This library expects `elixir` to be installed in your system and the `mix` binary to be available. If you want to provide an specific path to run the `mix` executable, it can be done using the `mix_path` configuration.
+
+The following example would run the hooks on a docker container:
+
+```elixir
+config :git_hooks,
+  auto_install: false,
+  mix_path: "docker-compose exec mix",
+```
+
+### Auto install
+
+To disable the automatic install of the git hooks set the configuration key `auto_install` to
+`false`.
+
+### Hook configuration
+
 One or more git hooks can be configured, those hooks will be the ones
 [installed](#installation) in your git project.
 
@@ -92,11 +114,6 @@ Currently there are supported two configuration options:
 
   * **tasks**: A list of the commands that will be executed when running a git hook. [See types of tasks](#type-of-tasks) for more info.
   * **verbose**: If true, the output of the mix tasks will be visible. This can be configured globally or per git hook.
-
-### Disable auto install
-
-To disable the automatic install of the git hooks set the configuration key `auto_install` to
-`false`.
 
 ### Example config
 

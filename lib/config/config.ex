@@ -61,6 +61,17 @@ defmodule GitHooks.Config do
   end
 
   @doc """
+  Returns the configured mix path.
+
+  The config should be a valid path the `mix` binary. The default behaviour
+  expects a regular `elixir` install and defaults to `mix`.
+  """
+  @spec mix_path() :: String.t()
+  def mix_path do
+    Application.get_env(:git_hooks, :mix_path, "mix")
+  end
+
+  @doc """
   Returns the general verbose configuration.
   """
   @spec verbose?() :: boolean()
