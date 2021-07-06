@@ -107,6 +107,6 @@ defmodule Mix.Tasks.GitHooks.Run do
   defp exit_if_failed(true), do: :ok
   defp exit_if_failed(false), do: error_exit()
 
-  @spec error_exit(non_neg_integer) :: no_return
+  @spec error_exit(term) :: no_return
   defp error_exit(error_code \\ {:shutdown, 1}), do: exit(error_code)
 end
