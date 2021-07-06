@@ -30,6 +30,7 @@ Main features are:
   * [Manual installation](#manual-installation)
 * [Configuration](#configuration)
   * [Mix path](#mix-path)
+    * [Troubleshooting in docker containers](#troubleshooting-in-docker-containers)
   * [Auto install](#auto-install)
   * [Hook configuration](#hook-configuration)
   * [Example config](#example-config)
@@ -99,6 +100,11 @@ config :git_hooks,
   auto_install: false,
   mix_path: "docker-compose exec mix",
 ```
+
+#### Troubleshooting in docker containers
+
+The `mix_path` configuration can be use to run mix hooks on a Docker container.
+If you have a TTY error running mix in a Docker container use `docker exec --tty $(docker-compose ps -q web) mix` as the `mix_path`. See this [issue](https://github.com/qgadrian/elixir_git_hooks/issues/82) as reference.
 
 ### Auto install
 
