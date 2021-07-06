@@ -273,6 +273,6 @@ mix git_hooks.run all
 
 ## Copyright and License
 
-Copyright (c) 2018 Adrián Quintás
+Copyright (c) 2021 Adrián Quintás
 
 Source code is released under [the MIT license](./LICENSE).
