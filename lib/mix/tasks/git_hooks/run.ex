@@ -53,12 +53,19 @@ defmodule Mix.Tasks.GitHooks.Run do
   def run(args) do
     {[git_hook_name], args} = Enum.split(args, 1)
 
-    git_hook_name
-    |> get_atom_from_arg()
-    |> check_is_valid_git_hook!()
-    |> Printer.info("Running hooks for ", append_first_arg: true)
-    |> Config.tasks()
-    |> run_tasks(args)
+    git_hook_type =
+      git_hook_name
+      |> get_atom_from_arg()
+      |> check_is_valid_git_hook!()
+
+    if Config.current_branch_allowed?(git_hook_type) do
+      git_hook_type
+      |> Printer.info("Running hooks for ", append_first_arg: true)
+      |> Config.tasks()
+      |> run_tasks(args)
+    else
+      Printer.info("skipping git_hooks for #{Config.current_branch()} branch")
+    end
   end
 
   @spec run_tasks({atom, list(GitHooks.allowed_configs())}, GitHooks.git_hook_args()) ::
