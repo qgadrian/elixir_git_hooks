@@ -112,7 +112,12 @@ defmodule GitHooks.Config do
   """
   @spec current_branch() :: String.t()
   def current_branch do
-    Application.get_env(:git_hooks, :current_branch_fn).()
+    current_branch_fn =
+      Application.get_env(:git_hooks, :current_branch_fn, fn ->
+        System.cmd("git", ["branch", "--show-current"])
+      end)
+
+    current_branch_fn.()
     |> Tuple.to_list()
     |> List.first()
     |> String.replace("\n", "")
