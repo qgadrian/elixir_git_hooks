@@ -27,6 +27,26 @@ defmodule GitHooks.ConfigTest do
       assert Config.tasks(:pre_commit) == {:pre_commit, tasks}
     end
 
+    test "when current branch is allowed to run for the git hook then current_branch_allowed? function returns true" do
+      branches_config = [whitelist: ["master"], blacklist: []]
+
+      put_git_hook_config(:pre_commit, branches: branches_config)
+
+      assert Config.current_branch_allowed?(:pre_commit)
+    end
+
+    test "when branches config is not provided then current_branch_allowed? function return true" do
+      assert Config.current_branch_allowed?(:pre_commit)
+    end
+
+    test "when current branch is disallowed to run git hook then current_branch_allowed? function returns false" do
+      branches_config = [whitelist: [], blacklist: ["master"]]
+
+      put_git_hook_config(:pre_commit, branches: branches_config)
+
+      refute Config.current_branch_allowed?(:pre_commit)
+    end
+
     test "when the verbose is enabled for the git hook then the verbose config function returns true" do
       put_git_hook_config(:pre_commit, verbose: true)
 

@@ -2,6 +2,13 @@ use Mix.Config
 
 config :git_hooks,
   auto_install: false,
+  current_branch_fn: fn ->
+    if Mix.env() == :test do
+      {"master\n", 0}
+    else
+      System.cmd("git", ["branch", "--show-current"])
+    end
+  end,
   hooks: [
     # prepare_commit_msg: [
     # verbose: true,

@@ -85,10 +85,55 @@ defmodule GitHooks.Config do
   """
   @spec verbose?(atom) :: boolean()
   def verbose?(git_hook_type) do
+    git_hook_type
+    |> get_git_hook_type_config()
+    |> Keyword.get_lazy(:verbose, fn -> verbose?() end)
+  end
+
+  @doc """
+  Returns if the current branch is allowed to run git hooks based on `branches`
+  config.
+  """
+  @spec current_branch_allowed?(atom) :: boolean()
+  def current_branch_allowed?(git_hook_type) do
+    case branches(git_hook_type) do
+      [whitelist: [], blacklist: []] ->
+        true
+
+      [whitelist: whitelist, blacklist: blacklist] ->
+        branch = current_branch()
+
+        branch in whitelist or branch not in blacklist
+    end
+  end
+
+  @doc """
+  Returns the current branch of user repo
+  """
+  @spec current_branch() :: String.t()
+  def current_branch do
+    Application.get_env(:git_hooks, :current_branch_fn).()
+    |> Tuple.to_list()
+    |> List.first()
+    |> String.replace("\n", "")
+  end
+
+  @spec branches() :: Keyword.t()
+  defp branches do
+    Keyword.merge([whitelist: [], blacklist: []], Application.get_env(:git_hooks, :branches, []))
+  end
+
+  @spec branches(atom) :: Keyword.t()
+  defp branches(git_hook_type) do
+    git_hook_type
+    |> get_git_hook_type_config()
+    |> Keyword.get_lazy(:branches, fn -> branches() end)
+  end
+
+  defp get_git_hook_type_config(git_hook_type) do
     :git_hooks
     |> Application.get_env(:hooks, [])
     |> Keyword.get(git_hook_type, [])
-    |> Keyword.get(:verbose, Application.get_env(:git_hooks, :verbose, false))
   end
 
   @spec io_stream(atom) :: any()

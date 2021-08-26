@@ -7,6 +7,7 @@ defmodule GitHooks.TestSupport.ConfigCase do
 
   using do
     quote do
+      @default_branches [whitelist: [], blacklist: []]
       @default_verbose false
       @default_mix_tasks ["mix help", "mix help deps"]
 
@@ -27,6 +28,7 @@ defmodule GitHooks.TestSupport.ConfigCase do
 
       def put_git_hook_config(git_hook_types, opts) when is_list(git_hook_types) do
         git_hook_config = [
+          branches: opts[:branches] || @default_branches,
           verbose: opts[:verbose] || @default_verbose,
           tasks: opts[:tasks] || @default_mix_tasks
         ]
@@ -41,6 +43,7 @@ defmodule GitHooks.TestSupport.ConfigCase do
 
       def put_git_hook_config(git_hook_type, opts) do
         git_hook_config = [
+          branches: opts[:branches] || @default_branches,
           verbose: opts[:verbose] || @default_verbose,
           tasks: opts[:tasks] || @default_mix_tasks
         ]

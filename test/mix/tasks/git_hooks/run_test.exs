@@ -83,6 +83,17 @@ defmodule Mix.Tasks.RunTest do
       assert capture_io(fn -> catch_exit(Run.run(["pre-commit"])) end) =~
                "`pre_commit`: `false foo bar` execution failed"
     end
+
+    test "when current branch is not allowed to run git hooks" do
+      put_git_hook_config(:pre_commit,
+        tasks: [{:cmd, "echo 'test command'"}],
+        verbose: true,
+        branches: [whitelist: [], blacklist: ["master"]]
+      )
+
+      assert capture_io(fn -> Run.run(["pre-commit"]) end) =~
+               "skipping git_hooks for master branch"
+    end
   end
 
   describe "Given args for the mix git hook task" do
@@ -126,6 +137,17 @@ defmodule Mix.Tasks.RunTest do
         end
       end)
     end
+
+    test "when current branch is not allowed to run git hooks" do
+      put_git_hook_config(:pre_commit,
+        tasks: [{:mix_task, :help, ["test"]}],
+        verbose: true,
+        branches: [whitelist: [], blacklist: ["master"]]
+      )
+
+      assert capture_io(fn -> Run.run(["pre-commit"]) end) =~
+               "skipping git_hooks for master branch"
+    end
   end
 
   describe "Given env vars to the mix git hook task" do
@@ -163,6 +185,19 @@ defmodule Mix.Tasks.RunTest do
         # Run.run(["pre-commit"])
         assert catch_exit(Run.run(["pre-commit"])) == {:shutdown, 1}
       end) =~ "Failed"
+    end
+
+    test "when current branch is not allowed to run git hooks" do
+      env = [{"TEST", "test-value"}]
+
+      put_git_hook_config(:pre_commit,
+        tasks: [{:cmd, "env", env: env}],
+        verbose: true,
+        branches: [whitelist: [], blacklist: ["master"]]
+      )
+
+      assert capture_io(fn -> Run.run(["pre-commit"]) end) =~
+               "skipping git_hooks for master branch"
     end
   end
 end
