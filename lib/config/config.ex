@@ -123,16 +123,20 @@ defmodule GitHooks.Config do
     |> String.replace("\n", "")
   end
 
+  @empty_branches [whitelist: [], blacklist: []]
   @spec branches() :: Keyword.t()
   defp branches do
-    Keyword.merge([whitelist: [], blacklist: []], Application.get_env(:git_hooks, :branches, []))
+    Keyword.merge(@empty_branches, Application.get_env(:git_hooks, :branches, []))
   end
 
   @spec branches(atom) :: Keyword.t()
   defp branches(git_hook_type) do
-    git_hook_type
-    |> get_git_hook_type_config()
-    |> Keyword.get_lazy(:branches, fn -> branches() end)
+    branches_config =
+      git_hook_type
+      |> get_git_hook_type_config()
+      |> Keyword.get_lazy(:branches, fn -> branches() end)
+
+    Keyword.merge(@empty_branches, branches_config)
   end
 
   defp get_git_hook_type_config(git_hook_type) do
