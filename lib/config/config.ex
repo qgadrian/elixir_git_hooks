@@ -96,15 +96,10 @@ defmodule GitHooks.Config do
   """
   @spec current_branch_allowed?(atom) :: boolean()
   def current_branch_allowed?(git_hook_type) do
-    case branches(git_hook_type) do
-      [whitelist: [], blacklist: []] ->
-        true
+    branch = current_branch()
+    [whitelist: whitelist, blacklist: blacklist] = branches(git_hook_type)
 
-      [whitelist: whitelist, blacklist: blacklist] ->
-        branch = current_branch()
-
-        branch in whitelist or branch not in blacklist
-    end
+    valid_branch?(branch, whitelist, blacklist)
   end
 
   @doc """
@@ -121,6 +116,25 @@ defmodule GitHooks.Config do
     |> Tuple.to_list()
     |> List.first()
     |> String.replace("\n", "")
+  end
+
+  @spec valid_branch?(String.t(), list(String.t()), list(String.t())) :: boolean()
+  defp valid_branch?(_, [], []), do: true
+
+  defp valid_branch?(branch, [_ | _] = whitelist, []) do
+    regex = whitelist |> Enum.join("|") |> Regex.compile!()
+
+    Regex.match?(regex, branch)
+  end
+
+  defp valid_branch?(branch, [], [_ | _] = blacklist) do
+    regex = blacklist |> Enum.join("|") |> Regex.compile!()
+
+    not Regex.match?(regex, branch)
+  end
+
+  defp valid_branch?(branch, whitelist, blacklist) do
+    valid_branch?(branch, whitelist, []) or valid_branch?(branch, [], blacklist)
   end
 
   @empty_branches [whitelist: [], blacklist: []]
