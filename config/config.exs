@@ -27,8 +27,7 @@ config :git_hooks,
       verbose: true,
       tasks: [
         {:mix_task, :dialyzer},
-        {:mix_task, :test, ["--color"]},
-        {:mix_task, :coveralls}
+        {:mix_task, :test, ["--color"]}
       ]
     ]
   ]
