@@ -65,8 +65,7 @@ defmodule GitHooks.MixProject do
   defp aliases do
     [
       compile: ["compile --warnings-as-errors"],
-      coveralls: ["coveralls.html"],
-      "coveralls.html": ["coveralls.html"]
+      coveralls: ["coveralls.html"]
     ]
   end
 

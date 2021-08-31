@@ -53,11 +53,14 @@ defmodule Mix.Tasks.GitHooks.Run do
   def run(args) do
     {[git_hook_name], args} = Enum.split(args, 1)
 
-    git_hook_type =
-      git_hook_name
-      |> get_atom_from_arg()
-      |> check_is_valid_git_hook!()
+    git_hook_name
+    |> get_atom_from_arg!()
+    |> check_is_valid_git_hook!()
+    |> maybe_run_git_hook!(args)
+  end
 
+  @spec maybe_run_git_hook!(GitHooks.git_hook_type(), args :: list(map)) :: :ok | no_return()
+  defp maybe_run_git_hook!(git_hook_type, args) do
     if Config.current_branch_allowed?(git_hook_type) do
       git_hook_type
       |> Printer.info("Running hooks for ", append_first_arg: true)
@@ -85,8 +88,8 @@ defmodule Mix.Tasks.GitHooks.Run do
     |> exit_if_failed()
   end
 
-  @spec get_atom_from_arg(String.t()) :: atom | no_return
-  defp get_atom_from_arg(git_hook_type_arg) do
+  @spec get_atom_from_arg!(String.t()) :: atom | no_return
+  defp get_atom_from_arg!(git_hook_type_arg) do
     case git_hook_type_arg do
       nil ->
         Printer.error("You should provide a git hook type to run")
