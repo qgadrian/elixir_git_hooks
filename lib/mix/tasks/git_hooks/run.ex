@@ -47,7 +47,7 @@ defmodule Mix.Tasks.GitHooks.Run do
   [here](`t:run_opts/0`) more info about the options.
   """
   @impl true
-  @spec run(list(String.t())) :: :ok | no_return
+  @spec run(list(String.t())) :: :ok | no_return()
   def run([]), do: error_exit()
 
   def run(args) do
@@ -99,7 +99,7 @@ defmodule Mix.Tasks.GitHooks.Run do
     end
   end
 
-  @spec check_is_valid_git_hook!(atom) :: no_return
+  @spec check_is_valid_git_hook!(atom) :: atom | no_return
   defp check_is_valid_git_hook!(git_hook_type) do
     unless Enum.any?(Config.supported_hooks(), &(&1 == git_hook_type)) do
       Printer.error("Invalid or unsupported hook `#{git_hook_type}`")
@@ -115,5 +115,6 @@ defmodule Mix.Tasks.GitHooks.Run do
   defp exit_if_failed(false), do: error_exit()
 
   @spec error_exit(term) :: no_return
+  @dialyzer {:no_return, error_exit: 0}
   defp error_exit(error_code \\ {:shutdown, 1}), do: exit(error_code)
 end
