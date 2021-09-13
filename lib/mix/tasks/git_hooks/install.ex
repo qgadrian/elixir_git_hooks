@@ -123,12 +123,20 @@ defmodule Mix.Tasks.GitHooks.Install do
 
   @spec resolve_git_path() :: any
   defp resolve_git_path() do
-    git_path = Path.join(Project.deps_path(), "/../.git")
+    :git_hooks
+    |> Application.get_env(:git_path)
+    |> case do
+      nil ->
+        path = Path.join(Project.deps_path(), "/../.git")
 
-    if File.dir?(git_path) do
-      git_path
-    else
-      resolve_git_submodule_path(git_path)
+        if File.dir?(path) do
+          path
+        else
+          resolve_git_submodule_path(path)
+        end
+
+      custom_path ->
+        custom_path
     end
   end
 
