@@ -101,6 +101,17 @@ config :git_hooks,
   mix_path: "docker-compose exec mix",
 ```
 
+### Git path
+
+This library expects `git` to be installed in the `.git` directory relative to your project root, or when using git submodules, the root of the superproject. If you want to provide a specific path to a custom git directory, it can be done using the `git_path` configuration.
+
+The follow example would run the hooks within a git submodule:
+
+```elixir
+config :git_hooks,
+  git_path: "../.git/modules/submodule-repo"
+```
+
 #### Troubleshooting in docker containers
 
 The `mix_path` configuration can be use to run mix hooks on a Docker container.
