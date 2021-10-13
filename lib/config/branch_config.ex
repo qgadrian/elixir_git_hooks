@@ -26,7 +26,11 @@ defmodule GitHooks.Config.BranchConfig do
   @spec current_branch_allowed?(atom) :: boolean()
   def current_branch_allowed?(git_hook_type) do
     branch = current_branch()
-    [whitelist: whitelist, blacklist: blacklist] = branches(git_hook_type)
+
+    branches_config = branches(git_hook_type)
+
+    whitelist = Keyword.get(branches_config, :whitelist, [])
+    blacklist = Keyword.get(branches_config, :blacklist, [])
 
     valid_branch?(branch, whitelist, blacklist)
   end
@@ -50,19 +54,15 @@ defmodule GitHooks.Config.BranchConfig do
     valid_branch?(branch, whitelist, []) or valid_branch?(branch, [], blacklist)
   end
 
-  @empty_branches [whitelist: [], blacklist: []]
   @spec branches() :: Keyword.t()
   defp branches do
-    Keyword.merge(@empty_branches, Application.get_env(:git_hooks, :branches, []))
+    Application.get_env(:git_hooks, :branches, [])
   end
 
   @spec branches(atom) :: Keyword.t()
   defp branches(git_hook_type) do
-    branches_config =
-      git_hook_type
-      |> Config.get_git_hook_type_config()
-      |> Keyword.get_lazy(:branches, fn -> branches() end)
-
-    Keyword.merge(@empty_branches, branches_config)
+    git_hook_type
+    |> Config.get_git_hook_type_config()
+    |> Keyword.get_lazy(:branches, fn -> branches() end)
   end
 end
