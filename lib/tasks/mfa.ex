@@ -48,9 +48,7 @@ defmodule GitHooks.Tasks.MFA do
 
     if arity != expected_arity do
       raise """
-      Invalid #{module}.#{function} arity for #{git_hook_type}, expected #{expected_arity} but got #{
-        arity
-      }. Check the Git hooks documentation to fix the expected parameters.
+      Invalid #{module}.#{function} arity for #{git_hook_type}, expected #{expected_arity} but got #{arity}. Check the Git hooks documentation to fix the expected parameters.
       """
     end
 
