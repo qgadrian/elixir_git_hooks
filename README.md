@@ -22,6 +22,7 @@ Main features are:
 
 ## Table of Contents
 
+
 <!-- vim-markdown-toc GFM -->
 
 * [Installation](#installation)
@@ -30,6 +31,7 @@ Main features are:
   * [Manual installation](#manual-installation)
 * [Configuration](#configuration)
   * [Mix path](#mix-path)
+  * [Git path](#git-path)
     * [Troubleshooting in docker containers](#troubleshooting-in-docker-containers)
   * [Auto install](#auto-install)
   * [Hook configuration](#hook-configuration)
@@ -131,6 +133,7 @@ Currently there are supported two configuration options:
 
   * **tasks**: A list of the commands that will be executed when running a git hook. [See types of tasks](#type-of-tasks) for more info.
   * **verbose**: If true, the output of the mix tasks will be visible. This can be configured globally or per git hook.
+  * **branches**: Allow or forbid the hook configuration to run (or not) in certain branches using `whitelist` or `blacklist` configuration (see example below).You can use regular expressions to match a branch name.
 
 ### Example config
 
@@ -144,6 +147,10 @@ if Mix.env() == :dev do
   config :git_hooks,
     auto_install: true,
     verbose: true,
+    branches: [
+      whitelist: ["feature-.*"],
+      blacklist: ["master"]
+    ],
     hooks: [
       pre_commit: [
         tasks: [
