@@ -53,7 +53,7 @@ defmodule GitHooks.MixProject do
   defp deps do
     [
       {:blankable, "~> 1.0.0"},
-      {:credo, "~> 1.5.0", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.6.0", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.1.0", only: [:dev], runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
