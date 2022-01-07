@@ -44,4 +44,42 @@ defmodule GitHooks.Config.BranchTest do
       assert BranchConfig.current_branch_allowed?(:pre_commit)
     end
   end
+
+  describe "default_current_git_branch_function/0" do
+    test "old git" do
+      Application.delete_env(:git_hooks, :current_branch_fn)
+
+      Application.put_env(:git_hooks, :current_git_version_fn, fn ->
+        {"git version 2.17.1\n", 0}
+      end)
+
+      Application.put_env(:git_hooks, :current_branch_fn_old, fn ->
+        {"branch-with-old-git\n", 0}
+      end)
+
+      Application.put_env(:git_hooks, :current_branch_fn_new, fn ->
+        raise "version check invalid"
+      end)
+
+      assert "branch-with-old-git" == BranchConfig.current_branch()
+    end
+
+    test "new git" do
+      Application.delete_env(:git_hooks, :current_branch_fn)
+
+      Application.put_env(:git_hooks, :current_git_version_fn, fn ->
+        {"git version 2.22.1\n", 0}
+      end)
+
+      Application.put_env(:git_hooks, :current_branch_fn_old, fn ->
+        raise "version check invalid"
+      end)
+
+      Application.put_env(:git_hooks, :current_branch_fn_new, fn ->
+        {"branch-with-new-git\n", 0}
+      end)
+
+      assert "branch-with-new-git" == BranchConfig.current_branch()
+    end
+  end
 end
