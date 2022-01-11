@@ -1,10 +1,16 @@
-defmodule GitHooks.Config.BranchTest do
+defmodule GitHooks.Config.BranchConfigTest do
   @moduledoc false
 
   use ExUnit.Case, async: false
   use GitHooks.TestSupport.ConfigCase
 
   alias GitHooks.Config.BranchConfig
+
+  setup do
+    on_exit(fn ->
+      Application.delete_env(:git_hooks, :current_branch_fn)
+    end)
+  end
 
   describe "current_branch_allowed?/0" do
     test "when current branch is allowed to run for the git hook then current_branch_allowed? function returns true" do
