@@ -1,0 +1,56 @@
+name: Run test suite and linters
+on:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup elixir
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: "24.2"
+          elixir-version: "1.13"
+
+      - name: Set mix file hash
+        id: set_vars
+        run: |
+          mix_hash="${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}"
+          echo "::set-output name=mix_hash::$mix_hash"
+
+      - name: Cache deps
+        uses: actions/cache@v2
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-v2-${{ steps.set_vars.outputs.mix_hash }}
+          restore-keys: |
+            ${{ runner.os }}-mix-
+
+      - name: Cache _build folder
+        uses: actions/cache@v2
+        with:
+          path: _build
+          key: ${{ runner.os }}-build-v2-${{ steps.set_vars.outputs.mix_hash }}
+          restore-keys: |
+            ${{ runner.os }}-build-v2-
+
+      - name: Install Dependencies
+        run: |
+          mix deps.get
+
+      - name: Check format
+        run: |
+          mix format --check-formatted
+
+      - name: Run Dialyzer
+        run: |
+          mix dialyzer
+
+      - name: Run tests
+        run: |
+          mix test
+
