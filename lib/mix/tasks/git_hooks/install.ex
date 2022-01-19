@@ -105,7 +105,7 @@ defmodule Mix.Tasks.GitHooks.Install do
     git_hooks = Config.git_hooks() |> Enum.join(" ")
 
     Git.resolve_git_path()
-    |> Path.join("/hooks/git_hooks.db")
+    |> Path.join("/git_hooks.db")
     |> write_backup(git_hooks)
   end
 
