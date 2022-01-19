@@ -8,6 +8,12 @@ defmodule GitHooks.Git do
   def resolve_git_path,
     do: maybe_preconfigured(Application.get_env(:git_hooks, :git_path, :detect))
 
+  def resolve_app_path do
+    git_dir = maybe_preconfigured(Application.get_env(:git_hooks, :git_path, :detect))
+    repo_dir = Path.dirname(git_dir)
+    Path.relative_to(File.cwd!(), repo_dir)
+  end
+
   @spec maybe_preconfigured(:detect | binary) :: Path.t() | no_return
   def maybe_preconfigured(:detect) do
     # if we can't figure out cwd, we can't do anything
