@@ -30,6 +30,17 @@ defmodule GitHooks.PathTest do
         assert Git.path_from_git(deep_dir) == {:ok, Path.join([tmp_dir, top_name, ".git"])}
       end
     end
+
+    @tag :tmp_dir
+    test "when git is not installed", %{tmp_dir: tmp_dir} do
+      assert Git.path_from_git(tmp_dir, "fakegit") == {:error, :no_system_git}
+      path = Path.join([Mix.Project.deps_path(), "..", ".git"])
+      message = "Error resolving git submodule path '#{path}'"
+
+      assert_raise RuntimeError, fn ->
+        Git.use_legacy_configuration()
+      end
+    end
   end
 
   # generates a list of directories, each one one level deeper than the previous one
