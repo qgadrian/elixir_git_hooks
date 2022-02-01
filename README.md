@@ -31,7 +31,7 @@ Main features are:
   * [Manual installation](#manual-installation)
 * [Configuration](#configuration)
   * [Mix path](#mix-path)
-  * [Git path](#git-path)
+  * [Git submodules](#git-submodules)
     * [Troubleshooting in docker containers](#troubleshooting-in-docker-containers)
   * [Auto install](#auto-install)
   * [Hook configuration](#hook-configuration)
@@ -103,11 +103,19 @@ config :git_hooks,
   mix_path: "docker-compose exec mix",
 ```
 
-### Git path
+### Git submodules
 
-This library expects `git` to be installed in the `.git` directory relative to your project root, or when using git submodules, the root of the superproject. If you want to provide a specific path to a custom git directory, it can be done using the `git_path` configuration.
+This library supports git submodules, just add your `git_hooks` configuration to
+any of the submodules projects.
 
-The follow example would run the hooks within a git submodule:
+Setting a custom _git hooks_ config path is also supported:
+
+```
+git config core.hooksPath .myCustomGithooks/
+```
+
+If for any reason you want to override the folder of the _git hooks_ path you
+can add the following configuration:
 
 ```elixir
 config :git_hooks,
