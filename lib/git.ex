@@ -1,8 +1,6 @@
 defmodule GitHooks.Git do
   @moduledoc false
 
-  alias Mix.Project
-
   @doc false
   @spec resolve_git_path() :: any
   def resolve_git_path do
@@ -10,28 +8,17 @@ defmodule GitHooks.Git do
     |> Application.get_env(:git_path)
     |> case do
       nil ->
-        path = Path.join(Project.deps_path(), "/../.git")
-
-        if File.dir?(path) do
-          path
-        else
-          resolve_git_submodule_path(path)
-        end
+        {path, 0} = System.cmd("git", ["rev-parse", "--git-path", "hooks"])
+        String.replace(path, "\n", "")
 
       custom_path ->
         custom_path
     end
   end
 
-  @spec resolve_git_submodule_path(String.t()) :: any
-  defp resolve_git_submodule_path(git_path) do
-    with {:ok, contents} <- File.read(git_path),
-         %{"dir" => submodule_dir} <- Regex.named_captures(~r/^gitdir:\s+(?<dir>.*)$/, contents) do
-      Project.deps_path()
-      |> Path.join("/../" <> submodule_dir)
-    else
-      _error ->
-        raise "Error resolving git submodule path '#{git_path}'"
-    end
+  @spec git_hooks_path_for(path :: String.t()) :: String.t()
+  def git_hooks_path_for(path) do
+    __MODULE__.resolve_git_path()
+    |> Path.join("/#{path}")
   end
 end

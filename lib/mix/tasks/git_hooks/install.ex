@@ -21,7 +21,7 @@ defmodule Mix.Tasks.GitHooks.Install do
   use Mix.Task
 
   alias GitHooks.Config
-  alias GitHooks.Git
+  alias GitHooks.Git.Path, as: GitPath
   alias GitHooks.Printer
 
   @impl true
@@ -55,9 +55,7 @@ defmodule Mix.Tasks.GitHooks.Install do
 
       case File.read(template_file) do
         {:ok, body} ->
-          target_file_path =
-            Git.resolve_git_path()
-            |> Path.join("/hooks/#{git_hook_atom_as_kebab_string}")
+          target_file_path = GitPath.git_hooks_path_for(git_hook_atom_as_kebab_string)
 
           target_file_body =
             body
@@ -85,13 +83,9 @@ defmodule Mix.Tasks.GitHooks.Install do
 
   @spec backup_current_hook(String.t(), Keyword.t()) :: {:error, atom} | {:ok, non_neg_integer()}
   defp backup_current_hook(git_hook_to_backup, opts) do
-    source_file_path =
-      Git.resolve_git_path()
-      |> Path.join("/hooks/#{git_hook_to_backup}")
+    source_file_path = GitPath.git_hooks_path_for(git_hook_to_backup)
 
-    target_file_path =
-      Git.resolve_git_path()
-      |> Path.join("/hooks/#{git_hook_to_backup}.pre_git_hooks_backup")
+    target_file_path = GitPath.git_hooks_path_for("/#{git_hook_to_backup}.pre_git_hooks_backup")
 
     unless opts[:quiet] || !Config.verbose?() do
       Printer.info("Backing up git hook file `#{source_file_path}` to `#{target_file_path}`")
@@ -104,8 +98,8 @@ defmodule Mix.Tasks.GitHooks.Install do
   defp track_configured_hooks do
     git_hooks = Config.git_hooks() |> Enum.join(" ")
 
-    Git.resolve_git_path()
-    |> Path.join("/hooks/git_hooks.db")
+    "/git_hooks.db"
+    |> GitPath.git_hooks_path_for()
     |> write_backup(git_hooks)
   end
 
@@ -123,8 +117,8 @@ defmodule Mix.Tasks.GitHooks.Install do
 
   @spec ensure_hooks_folder_exists() :: any
   defp ensure_hooks_folder_exists do
-    Git.resolve_git_path()
-    |> Path.join("/hooks")
+    "/"
+    |> GitPath.git_hooks_path_for()
     |> File.mkdir_p()
   end
 
@@ -134,8 +128,8 @@ defmodule Mix.Tasks.GitHooks.Install do
       Config.git_hooks()
       |> Enum.map(&Atom.to_string/1)
 
-    Git.resolve_git_path()
-    |> Path.join("/git_hooks.db")
+    "/git_hooks.db"
+    |> GitPath.git_hooks_path_for()
     |> File.read()
     |> case do
       {:ok, file} ->
@@ -149,8 +143,8 @@ defmodule Mix.Tasks.GitHooks.Install do
               "Remove old git hook `#{git_hook_atom_as_kebab_string}` and restore backup"
             )
 
-            Git.resolve_git_path()
-            |> Path.join("/hooks/#{git_hook_atom_as_kebab_string}")
+            git_hook_atom_as_kebab_string
+            |> GitPath.git_hooks_path_for()
             |> File.rm()
 
             restore_backup(git_hook_atom_as_kebab_string)
@@ -165,16 +159,9 @@ defmodule Mix.Tasks.GitHooks.Install do
   @spec restore_backup(String.t()) :: any
   defp restore_backup(git_hook_atom_as_kebab_string) do
     backup_path =
-      Path.join(
-        Git.resolve_git_path(),
-        "/hooks/#{git_hook_atom_as_kebab_string}.pre_git_hooks_backup"
-      )
+      GitPath.git_hooks_path_for("/#{git_hook_atom_as_kebab_string}.pre_git_hooks_backup")
 
-    restore_path =
-      Path.join(
-        Git.resolve_git_path(),
-        "/#{git_hook_atom_as_kebab_string}"
-      )
+    restore_path = GitPath.git_hooks_path_for(git_hook_atom_as_kebab_string)
 
     case File.rename(backup_path, restore_path) do
       :ok -> :ok
