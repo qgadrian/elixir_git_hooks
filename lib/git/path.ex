@@ -27,13 +27,11 @@ defmodule GitHooks.Git.Path do
 
   # https://stackoverflow.com/questions/10848191/git-submodule-commit-hooks
   #
-  # Git 2.10+
-  # `git rev-parse --git-path hooks`
-  # Pre Git 2.10+
-  # `git rev-parse --git-dir /hooks`
+  # For git >= 2.10+ => `git rev-parse --git-path hooks`
+  # For git < 2.10+ => `git rev-parse --git-dir /hooks`
   #
-  # This will support as well changes on the default /hooks path
-  # git config core.hooksPath .githooks/
+  # This will support as well changes on the default /hooks path:
+  # `git config core.hooksPath .myCustomGithooks/`
 
   @spec resolve_git_hooks_path_based_on_git_version() :: String.t()
   defp resolve_git_hooks_path_based_on_git_version() do
