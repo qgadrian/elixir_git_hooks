@@ -11,7 +11,7 @@ defmodule GitHooks.Git.Path do
 
     case {git_hooks_path_config, git_path_config} do
       {nil, nil} ->
-        resolve_git_hooks_path_based_on_git_version()
+        resolve_git_path_based_on_git_version("hooks")
 
       {nil, git_path_config} ->
         "#{git_path_config}/hooks"
@@ -23,7 +23,8 @@ defmodule GitHooks.Git.Path do
 
   @doc false
   def resolve_app_path do
-    git_dir = Application.get_env(:git_hooks, :git_path, &resolve_git_hooks_path/0)
+    git_path = resolve_git_path_based_on_git_version()
+    git_dir = Application.get_env(:git_hooks, :git_path, git_path)
     repo_dir = Path.dirname(git_dir)
 
     Path.relative_to(File.cwd!(), repo_dir)
@@ -48,17 +49,17 @@ defmodule GitHooks.Git.Path do
   # This will support as well changes on the default /hooks path:
   # `git config core.hooksPath .myCustomGithooks/`
 
-  @spec resolve_git_hooks_path_based_on_git_version() :: String.t()
-  defp resolve_git_hooks_path_based_on_git_version() do
+  @spec resolve_git_path_based_on_git_version(dir :: String.t()) :: String.t()
+  defp resolve_git_path_based_on_git_version(dir \\ "") do
     Git.git_version()
     |> Version.compare(Version.parse!("2.10.0"))
     |> case do
       :lt ->
-        {path, 0} = System.cmd("git", ["rev-parse", "--git-dir", "hooks"])
+        {path, 0} = System.cmd("git", ["rev-parse", "--git-dir", dir])
         String.replace(path, "\n", "")
 
       _gt_or_eq ->
-        {path, 0} = System.cmd("git", ["rev-parse", "--git-path", "hooks"])
+        {path, 0} = System.cmd("git", ["rev-parse", "--git-path", dir])
         String.replace(path, "\n", "")
     end
   end
