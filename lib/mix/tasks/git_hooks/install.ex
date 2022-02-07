@@ -15,7 +15,6 @@ defmodule Mix.Tasks.GitHooks.Install do
   ```elixir
   mix git_hooks.install`
   ```
-
   """
 
   use Mix.Task
@@ -28,7 +27,10 @@ defmodule Mix.Tasks.GitHooks.Install do
   @spec run(Keyword.t()) :: :ok
   def run(args) do
     {opts, _other_args, _} =
-      OptionParser.parse(args, switches: [quiet: :boolean], aliases: [q: :quiet])
+      OptionParser.parse(args,
+        switches: [quiet: :boolean, dry_run: :boolean],
+        aliases: [q: :quiet]
+      )
 
     install(opts)
   end
@@ -49,38 +51,48 @@ defmodule Mix.Tasks.GitHooks.Install do
     clean_missing_hooks()
     track_configured_hooks()
 
-    Config.git_hooks()
-    |> Enum.each(fn git_hook ->
-      git_hook_atom_as_string = Atom.to_string(git_hook)
-      git_hook_atom_as_kebab_string = Recase.to_kebab(git_hook_atom_as_string)
+    git_hooks_configs = Config.git_hooks()
 
-      case File.read(template_file) do
-        {:ok, body} ->
-          target_file_path = GitPath.git_hooks_path_for(git_hook_atom_as_kebab_string)
+    install_result =
+      Enum.map(git_hooks_configs, fn git_hook ->
+        git_hook_atom_as_string = Atom.to_string(git_hook)
+        git_hook_atom_as_kebab_string = Recase.to_kebab(git_hook_atom_as_string)
 
-          target_file_body =
-            body
-            |> String.replace("$git_hook", git_hook_atom_as_string)
-            |> String.replace("$mix_path", mix_path)
-            |> String.replace("$project_path", project_path)
+        case File.read(template_file) do
+          {:ok, body} ->
+            target_file_path = GitPath.git_hooks_path_for(git_hook_atom_as_kebab_string)
 
-          unless opts[:quiet] || !Config.verbose?() do
-            Printer.info(
-              "Writing git hook for `#{git_hook_atom_as_string}` to `#{target_file_path}`"
-            )
-          end
+            target_file_body =
+              body
+              |> String.replace("$git_hook", git_hook_atom_as_string)
+              |> String.replace("$mix_path", mix_path)
+              |> String.replace("$project_path", project_path)
 
-          backup_current_hook(git_hook_atom_as_kebab_string, opts)
+            unless opts[:quiet] || !Config.verbose?() do
+              Printer.info(
+                "Writing git hook for `#{git_hook_atom_as_string}` to `#{target_file_path}`"
+              )
+            end
 
-          File.write(target_file_path, target_file_body)
-          File.chmod(target_file_path, 0o755)
+            backup_current_hook(git_hook_atom_as_kebab_string, opts)
 
-        {:error, reason} ->
-          reason |> inspect() |> Printer.error()
-      end
-    end)
+            if opts[:dry_run] do
+              {git_hook, target_file_body}
+            else
+              File.write(target_file_path, target_file_body)
+              File.chmod(target_file_path, 0o755)
+            end
 
-    :ok
+          {:error, reason} ->
+            reason |> inspect() |> Printer.error()
+        end
+      end)
+
+    if opts[:dry_run] do
+      install_result
+    else
+      :ok
+    end
   end
 
   @spec backup_current_hook(String.t(), Keyword.t()) :: {:error, atom} | {:ok, non_neg_integer()}
