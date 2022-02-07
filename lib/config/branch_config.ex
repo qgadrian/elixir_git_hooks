@@ -10,7 +10,7 @@ defmodule GitHooks.Config.BranchConfig do
   def current_branch do
     current_branch_fn =
       Application.get_env(:git_hooks, :current_branch_fn, fn ->
-        System.cmd("git", ["rev-parse", "--abbrev-ref", "HEAD"])
+        System.cmd("git", ["rev-parse", "--abbrev-ref", "HEAD"], stderr_to_stdout: true)
       end)
 
     current_branch_fn.()
