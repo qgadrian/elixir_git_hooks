@@ -4,12 +4,12 @@
 [![Build Status](https://travis-ci.org/qgadrian/elixir_git_hooks.svg?branch=master)](https://travis-ci.org/qgadrian/elixir_git_hooks.svg?branch=master)
 [![Inline docs](http://inch-ci.org/github/qgadrian/elixir_git_hooks.svg)](http://inch-ci.org/github/qgadrian/elixir_git_hooks)
 
-# GitHooks
+# GitHooks 🪝
 
 Configure [git hooks](https://git-scm.com/docs/githooks) in your Elixir
 projects.
 
-Main features are:
+Main features:
 
 * **Simplicity**: Automatic or manually install the configured git hook actions.
 * **Flexibility**: You choose what to use to define the git hooks actions:
@@ -30,13 +30,13 @@ Main features are:
   * [Automatic installation](#automatic-installation)
   * [Manual installation](#manual-installation)
 * [Configuration](#configuration)
+  * [Auto install](#auto-install)
+  * [Hook configuration](#hook-configuration)
   * [Mix path](#mix-path)
   * [Git submodules](#git-submodules)
     * [Troubleshooting in docker containers](#troubleshooting-in-docker-containers)
-  * [Auto install](#auto-install)
-  * [Hook configuration](#hook-configuration)
   * [Example config](#example-config)
-  * [Type of tasks](#type-of-tasks)
+  * [Task types](#task-types)
     * [Mix task](#mix-task)
     * [Command](#command)
     * [Executable file](#executable-file)
@@ -91,9 +91,26 @@ mix git_hooks.install
 
 ## Configuration
 
+### Auto install
+
+To disable the automatic install of the git hooks set the configuration key `auto_install` to
+`false`.
+
+### Hook configuration
+
+One or more git hooks can be configured, those hooks will be the ones
+[installed](#installation) in your git project.
+
+Currently there are supported two configuration options:
+
+  * **tasks**: A list of the commands that will be executed when running a git hook. [See types of tasks](#type-of-tasks) for more info.
+  * **verbose**: If true, the output of the mix tasks will be visible. This can be configured globally or per git hook.
+  * **branches**: Allow or forbid the hook configuration to run (or not) in certain branches using `whitelist` or `blacklist` configuration (see example below). You can use regular expressions to match a branch name.
+
+
 ### Mix path
 
-This library expects `elixir` to be installed in your system and the `mix` binary to be available. If you want to provide an specific path to run the `mix` executable, it can be done using the `mix_path` configuration.
+This library expects `elixir` to be installed in your system and the `mix` binary to be available. If you want to provide a specific path to run the `mix` executable, it can be done using the `mix_path` configuration.
 
 The following example would run the hooks on a docker container:
 
@@ -124,24 +141,8 @@ config :git_hooks,
 
 #### Troubleshooting in docker containers
 
-The `mix_path` configuration can be use to run mix hooks on a Docker container.
+The `mix_path` configuration can be used to run mix hooks on a Docker container.
 If you have a TTY error running mix in a Docker container use `docker exec --tty $(docker-compose ps -q web) mix` as the `mix_path`. See this [issue](https://github.com/qgadrian/elixir_git_hooks/issues/82) as reference.
-
-### Auto install
-
-To disable the automatic install of the git hooks set the configuration key `auto_install` to
-`false`.
-
-### Hook configuration
-
-One or more git hooks can be configured, those hooks will be the ones
-[installed](#installation) in your git project.
-
-Currently there are supported two configuration options:
-
-  * **tasks**: A list of the commands that will be executed when running a git hook. [See types of tasks](#type-of-tasks) for more info.
-  * **verbose**: If true, the output of the mix tasks will be visible. This can be configured globally or per git hook.
-  * **branches**: Allow or forbid the hook configuration to run (or not) in certain branches using `whitelist` or `blacklist` configuration (see example below).You can use regular expressions to match a branch name.
 
 ### Example config
 
@@ -177,7 +178,7 @@ if Mix.env() == :dev do
 end
 ```
 
-### Type of tasks
+### Task types
 
 > For more information, check the [module
 > documentation](https://hexdocs.pm/git_hooks) for each of the different
@@ -305,6 +306,6 @@ mix git_hooks.run all
 
 ## Copyright and License
 
-Copyright © 2021 Adrián Quintás
+Copyright © 2022 Adrián Quintás
 
 Source code is released under [the MIT license](./LICENSE).
