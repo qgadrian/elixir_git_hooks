@@ -14,6 +14,13 @@ defmodule GitHooks.Git.Path do
     end
   end
 
+  @doc false
+  def resolve_app_path do
+    git_dir = Application.get_env(:git_hooks, :git_path, &resolve_git_hooks_path/0)
+    repo_dir = Path.dirname(git_dir)
+    Path.relative_to(File.cwd!(), repo_dir)
+  end
+
   @spec git_hooks_path_for(path :: String.t()) :: String.t()
   def git_hooks_path_for(path) do
     __MODULE__.resolve_git_hooks_path()
