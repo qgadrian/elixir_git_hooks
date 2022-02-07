@@ -6,11 +6,18 @@ defmodule GitHooks.Git.Path do
   @doc false
   @spec resolve_git_hooks_path() :: any
   def resolve_git_hooks_path do
-    :git_hooks
-    |> Application.get_env(:git_path)
-    |> case do
-      nil -> resolve_git_hooks_path_based_on_git_version()
-      custom_path -> custom_path
+    git_path_config = Application.get_env(:git_hooks, :git_path, nil)
+    git_hooks_path_config = Application.get_env(:git_hooks, :git_hooks_path, nil)
+
+    case {git_hooks_path_config, git_path_config} do
+      {nil, nil} ->
+        resolve_git_hooks_path_based_on_git_version()
+
+      {nil, git_path_config} ->
+        "#{git_path_config}/hooks"
+
+      {git_hooks_path_config, _} ->
+        git_hooks_path_config
     end
   end
 

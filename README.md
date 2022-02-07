@@ -34,6 +34,9 @@ Main features:
   * [Hook configuration](#hook-configuration)
   * [Mix path](#mix-path)
   * [Git submodules](#git-submodules)
+  * [Custom git paths](#custom-git-paths)
+    * [Git path](#git-path)
+    * [Git hooks path](#git-hooks-path)
     * [Troubleshooting in docker containers](#troubleshooting-in-docker-containers)
   * [Example config](#example-config)
   * [Task types](#task-types)
@@ -131,13 +134,40 @@ Setting a custom _git hooks_ config path is also supported:
 git config core.hooksPath .myCustomGithooks/
 ```
 
-If for any reason you want to override the folder of the _git hooks_ path you
+### Custom git paths
+
+By default this library expects your Elixir project to be the root of the git
+repository. If this is the case, you might need to configure custom paths based
+on your folders relative paths.
+
+#### Git path
+
+If you need to override the folder of the _git_ path you
 can add the following configuration:
 
 ```elixir
 config :git_hooks,
-  git_path: "../.git/modules/submodule-repo"
+  git_path: "../.git"
 ```
+
+This is useful if the root of your project is not managed directly by the VCS
+but the parent.
+
+If you set the `git_path`, the git hooks path will expect to be inside
+the `hooks` folder of the provided path configuration. In the example above, `../.git/hooks`.
+
+#### Git hooks path
+
+If you need to override the folder of the _git hooks_ path you
+can add the following configuration:
+
+```elixir
+config :git_hooks,
+  git_hooks_path: "../.git/hooks"
+```
+
+This is useful if the root of your project is not managed directly by the VCS
+but the parent and you are using a custom path for your git hooks.
 
 #### Troubleshooting in docker containers
 
