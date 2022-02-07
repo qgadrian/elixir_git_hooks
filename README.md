@@ -32,12 +32,12 @@ Main features:
 * [Configuration](#configuration)
   * [Auto install](#auto-install)
   * [Hook configuration](#hook-configuration)
-  * [Mix path](#mix-path)
   * [Git submodules](#git-submodules)
-  * [Custom git paths](#custom-git-paths)
+  * [Custom paths](#custom-paths)
     * [Git path](#git-path)
     * [Git hooks path](#git-hooks-path)
-    * [Troubleshooting in docker containers](#troubleshooting-in-docker-containers)
+    * [Mix path](#mix-path)
+      * [Troubleshooting in docker containers](#troubleshooting-in-docker-containers)
   * [Example config](#example-config)
   * [Task types](#task-types)
     * [Mix task](#mix-task)
@@ -111,18 +111,6 @@ Currently there are supported two configuration options:
   * **branches**: Allow or forbid the hook configuration to run (or not) in certain branches using `whitelist` or `blacklist` configuration (see example below). You can use regular expressions to match a branch name.
 
 
-### Mix path
-
-This library expects `elixir` to be installed in your system and the `mix` binary to be available. If you want to provide a specific path to run the `mix` executable, it can be done using the `mix_path` configuration.
-
-The following example would run the hooks on a docker container:
-
-```elixir
-config :git_hooks,
-  auto_install: false,
-  mix_path: "docker-compose exec mix",
-```
-
 ### Git submodules
 
 This library supports git submodules, just add your `git_hooks` configuration to
@@ -134,7 +122,7 @@ Setting a custom _git hooks_ config path is also supported:
 git config core.hooksPath .myCustomGithooks/
 ```
 
-### Custom git paths
+### Custom paths
 
 By default this library expects your Elixir project to be the root of the git
 repository. If this is the case, you might need to configure custom paths based
@@ -142,7 +130,7 @@ on your folders relative paths.
 
 #### Git path
 
-If you need to override the folder of the _git_ path you
+If you need to override the folder of the _git path_ you
 can add the following configuration:
 
 ```elixir
@@ -158,7 +146,7 @@ the `hooks` folder of the provided path configuration. In the example above, `..
 
 #### Git hooks path
 
-If you need to override the folder of the _git hooks_ path you
+If you need to override the folder of the _git hooks path_ you
 can add the following configuration:
 
 ```elixir
@@ -169,7 +157,19 @@ config :git_hooks,
 This is useful if the root of your project is not managed directly by the VCS
 but the parent and you are using a custom path for your git hooks.
 
-#### Troubleshooting in docker containers
+#### Mix path
+
+This library expects `elixir` to be installed in your system and the `mix` binary to be available. If you want to provide a specific path to run the `mix` executable, it can be done using the `mix_path` configuration.
+
+The following example would run the hooks on a docker container:
+
+```elixir
+config :git_hooks,
+  auto_install: false,
+  mix_path: "docker-compose exec mix",
+```
+
+##### Troubleshooting in docker containers
 
 The `mix_path` configuration can be used to run mix hooks on a Docker container.
 If you have a TTY error running mix in a Docker container use `docker exec --tty $(docker-compose ps -q web) mix` as the `mix_path`. See this [issue](https://github.com/qgadrian/elixir_git_hooks/issues/82) as reference.

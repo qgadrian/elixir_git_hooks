@@ -25,6 +25,7 @@ defmodule GitHooks.Git.Path do
   def resolve_app_path do
     git_dir = Application.get_env(:git_hooks, :git_path, &resolve_git_hooks_path/0)
     repo_dir = Path.dirname(git_dir)
+
     Path.relative_to(File.cwd!(), repo_dir)
   end
 
