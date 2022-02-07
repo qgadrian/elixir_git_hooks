@@ -33,10 +33,7 @@ Main features:
   * [Auto install](#auto-install)
   * [Hook configuration](#hook-configuration)
   * [Git submodules](#git-submodules)
-  * [Custom paths](#custom-paths)
-    * [Git path](#git-path)
-    * [Git hooks path](#git-hooks-path)
-    * [Mix path](#mix-path)
+  * [Custom mix path](#custom-mix-path)
       * [Troubleshooting in docker containers](#troubleshooting-in-docker-containers)
   * [Example config](#example-config)
   * [Task types](#task-types)
@@ -122,42 +119,7 @@ Setting a custom _git hooks_ config path is also supported:
 git config core.hooksPath .myCustomGithooks/
 ```
 
-### Custom paths
-
-By default this library expects your Elixir project to be the root of the git
-repository. If this is the case, you might need to configure custom paths based
-on your folders relative paths.
-
-#### Git path
-
-If you need to override the folder of the _git path_ you
-can add the following configuration:
-
-```elixir
-config :git_hooks,
-  git_path: "../.git"
-```
-
-This is useful if the root of your project is not managed directly by the VCS
-but the parent.
-
-If you set the `git_path`, the git hooks path will expect to be inside
-the `hooks` folder of the provided path configuration. In the example above, `../.git/hooks`.
-
-#### Git hooks path
-
-If you need to override the folder of the _git hooks path_ you
-can add the following configuration:
-
-```elixir
-config :git_hooks,
-  git_hooks_path: "../.git/hooks"
-```
-
-This is useful if the root of your project is not managed directly by the VCS
-but the parent and you are using a custom path for your git hooks.
-
-#### Mix path
+### Custom mix path
 
 This library expects `elixir` to be installed in your system and the `mix` binary to be available. If you want to provide a specific path to run the `mix` executable, it can be done using the `mix_path` configuration.
 

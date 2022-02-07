@@ -6,28 +6,16 @@ defmodule GitHooks.Git.Path do
   @doc false
   @spec resolve_git_hooks_path() :: any
   def resolve_git_hooks_path do
-    git_path_config = Application.get_env(:git_hooks, :git_path, nil)
-    git_hooks_path_config = Application.get_env(:git_hooks, :git_hooks_path, nil)
-
-    case {git_hooks_path_config, git_path_config} do
-      {nil, nil} ->
-        resolve_git_path_based_on_git_version("hooks")
-
-      {nil, git_path_config} ->
-        "#{git_path_config}/hooks"
-
-      {git_hooks_path_config, _} ->
-        git_hooks_path_config
-    end
+    resolve_git_path_based_on_git_version("hooks")
   end
 
   @doc false
   def resolve_app_path do
-    git_path = resolve_git_path_based_on_git_version()
-    git_dir = Application.get_env(:git_hooks, :git_path, git_path)
-    repo_dir = Path.dirname(git_dir)
+    repo_path =
+      resolve_git_path_based_on_git_version()
+      |> Path.dirname()
 
-    Path.relative_to(File.cwd!(), repo_dir)
+    Path.relative_to(File.cwd!(), repo_path)
   end
 
   @spec git_hooks_path_for(path :: String.t()) :: String.t()
