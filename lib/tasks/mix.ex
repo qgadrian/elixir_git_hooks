@@ -75,24 +75,22 @@ defimpl GitHooks.Task, for: GitHooks.Tasks.Mix do
     Map.put(mix_task, :result, result)
   end
 
-  # Mix tasks always raise an error if they are not success, at the moment does
-  # not seems that handling the result is needed. Also, handling the result to
-  # check the success of a task is almost impossible, as it will depend on each
-  # implementation.
-  #
-  # XXX Since tests runs on the command, if they fail then this task is
-  # considered failed.
-  def success?(%MixTask{result: 1}), do: false
-  def success?(%MixTask{result: _}), do: true
+  # Mix tasks raise an error if they are valid, but determining if they are
+  # success or not depends on the return of the task.
+  @success_results [0, :ok, nil]
 
-  def print_result(%MixTask{task: task, result: 1} = mix_task) do
-    Printer.error("`#{task}` failed")
+  def success?(%MixTask{result: result}) when result in @success_results, do: true
+  def success?(%MixTask{result: _}), do: false
+
+  def print_result(%MixTask{task: task, result: result} = mix_task)
+      when result in @success_results do
+    Printer.success("`#{task}` was successful")
 
     mix_task
   end
 
-  def print_result(%MixTask{task: task, result: _} = mix_task) do
-    Printer.success("`#{task}` was successful")
+  def print_result(%MixTask{task: task, result: result} = mix_task) do
+    Printer.error("mix task `#{task}` failed, return result: #{inspect(result)}")
 
     mix_task
   end
