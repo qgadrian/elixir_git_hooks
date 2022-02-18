@@ -43,12 +43,18 @@ defmodule GitHooks.Git.Path do
     |> Version.compare(Version.parse!("2.10.0"))
     |> case do
       :lt ->
-        {path, 0} = System.cmd("git", ["rev-parse", "--git-dir", dir])
-        String.replace(path, "\n", "")
+        "git"
+        |> System.cmd(["rev-parse", "--git-dir", dir])
+        |> build_git_path()
 
       _gt_or_eq ->
-        {path, 0} = System.cmd("git", ["rev-parse", "--git-path", dir])
-        String.replace(path, "\n", "")
+        "git"
+        |> System.cmd(["rev-parse", "--git-path", dir])
+        |> build_git_path()
     end
   end
+
+  @spec build_git_path({String.t(), number}) :: String.t()
+  defp build_git_path({path, 0}), do: String.replace(path, "\n", "")
+  defp build_git_path(_), do: ".git/hooks"
 end
