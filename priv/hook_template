@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ "$project_path" != "" ] && cd $project_path
+[ "$project_path" != "" ] && cd "$project_path"
 
 $mix_path git_hooks.run $git_hook "$@"
 [ $? -ne 0 ] && exit 1

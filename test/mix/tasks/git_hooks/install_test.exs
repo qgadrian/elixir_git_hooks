@@ -34,7 +34,7 @@ defmodule Mix.Tasks.InstallTest do
 
     ~s(#!/bin/sh
 
-[ "#{app_path}" != "" ] && cd #{app_path}
+[ "#{app_path}" != "" ] && cd "#{app_path}"
 
 mix git_hooks.run #{git_hook} "$@"
 [ $? -ne 0 ] && exit 1
