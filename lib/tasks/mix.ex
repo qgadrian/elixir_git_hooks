@@ -56,6 +56,13 @@ defimpl GitHooks.Task, for: GitHooks.Tasks.Mix do
   alias GitHooks.Tasks.Mix, as: MixTask
   alias GitHooks.Printer
 
+  # Mix tasks raise an error if they are valid, but determining if they are
+  # success or not depends on the return of the task.
+  # @default_success_results [0, :ok, nil, {:ok, []}, {:noop, []}]
+  @default_success_results [0, :ok, nil]
+
+  @sucess_results GitHooks.Config.extra_sucess_returns() ++ @default_success_results
+
   def run(%MixTask{task: :test, args: args} = mix_task, _opts) do
     args = ["test" | args] ++ ["--color"]
 
@@ -75,22 +82,17 @@ defimpl GitHooks.Task, for: GitHooks.Tasks.Mix do
     Map.put(mix_task, :result, result)
   end
 
-  # Mix tasks raise an error if they are valid, but determining if they are
-  # success or not depends on the return of the task.
-  @success_results [0, :ok, nil]
-
-  def success?(%MixTask{result: result}) when result in @success_results, do: true
-  def success?(%MixTask{result: _}), do: false
-
-  def print_result(%MixTask{task: task, result: result} = mix_task)
-      when result in @success_results do
-    Printer.success("`#{task}` was successful")
-
-    mix_task
-  end
+  def success?(%MixTask{result: result}) when result in @sucess_results, do: true
+  def success?(%MixTask{result: _result}), do: false
 
   def print_result(%MixTask{task: task, result: result} = mix_task) do
-    Printer.error("mix task `#{task}` failed, return result: #{inspect(result)}")
+    case result do
+      result when result in @sucess_results ->
+        Printer.success("`#{task}` was successful")
+
+      _ ->
+        Printer.error("mix task `#{task}` failed, return result: #{inspect(result)}")
+    end
 
     mix_task
   end

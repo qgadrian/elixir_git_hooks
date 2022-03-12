@@ -197,6 +197,25 @@ config :git_hooks,
   ]
 ```
 
+By default this library expects by default the following return values from mix tasks:
+
+```elixir
+0
+:ok
+nil
+```
+
+If you want to support additional success return values from your mix tasks, you
+can add them by adding the following configuration:
+
+```elixir
+config :git_hooks,
+  extra_sucess_returns: [
+    {:noop, []},
+    {:ok, []}
+  ]
+```
+
 #### Command
 
 To run a simple command you can either declare a string or a tuple with the

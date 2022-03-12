@@ -7,6 +7,9 @@ defmodule GitHooks do
     Install.run(["--quiet"])
   end
 
+  @typedoc """
+  A Git hook
+  """
   @type git_hook_type :: atom
   @type git_hook_args :: list(String.t())
 

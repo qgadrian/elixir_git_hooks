@@ -63,6 +63,17 @@ defmodule GitHooks.Config do
     Application.get_env(:git_hooks, :mix_path, "mix")
   end
 
+  @doc """
+  Returns the configuration for additional success returns from mix
+  tasks.
+
+  See `GitHooks.Task` for default supported returns from Mix task.
+  """
+  @spec extra_sucess_returns() :: list(term)
+  def extra_sucess_returns do
+    Application.get_env(:git_hooks, :extra_sucess_returns, [])
+  end
+
   defdelegate tasks(git_hook_type), to: TasksConfig
 
   defdelegate verbose?, to: VerboseConfig
