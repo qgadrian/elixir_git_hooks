@@ -15,7 +15,9 @@ defmodule GitHooks.Git.Path do
       resolve_git_path_based_on_git_version()
       |> Path.dirname()
 
-    Path.relative_to(File.cwd!(), repo_path)
+    project_path = Application.get_env(:git_hooks, :project_path, File.cwd!())
+
+    Path.relative_to(project_path, repo_path)
   end
 
   @spec git_hooks_path_for(path :: String.t()) :: String.t()
