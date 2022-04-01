@@ -210,7 +210,7 @@ can add them by adding the following configuration:
 
 ```elixir
 config :git_hooks,
-  extra_sucess_returns: [
+  extra_success_returns: [
     {:noop, []},
     {:ok, []}
   ]

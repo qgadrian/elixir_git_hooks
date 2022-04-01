@@ -61,7 +61,7 @@ defimpl GitHooks.Task, for: GitHooks.Tasks.Mix do
   # @default_success_results [0, :ok, nil, {:ok, []}, {:noop, []}]
   @default_success_results [0, :ok, nil]
 
-  @sucess_results GitHooks.Config.extra_sucess_returns() ++ @default_success_results
+  @success_results GitHooks.Config.extra_success_returns() ++ @default_success_results
 
   def run(%MixTask{task: :test, args: args} = mix_task, _opts) do
     args = ["test" | args] ++ ["--color"]
@@ -82,12 +82,12 @@ defimpl GitHooks.Task, for: GitHooks.Tasks.Mix do
     Map.put(mix_task, :result, result)
   end
 
-  def success?(%MixTask{result: result}) when result in @sucess_results, do: true
+  def success?(%MixTask{result: result}) when result in @success_results, do: true
   def success?(%MixTask{result: _result}), do: false
 
   def print_result(%MixTask{task: task, result: result} = mix_task) do
     case result do
-      result when result in @sucess_results ->
+      result when result in @success_results ->
         Printer.success("`#{task}` was successful")
 
       _ ->

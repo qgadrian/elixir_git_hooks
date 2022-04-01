@@ -69,9 +69,9 @@ defmodule GitHooks.Config do
 
   See `GitHooks.Task` for default supported returns from Mix task.
   """
-  @spec extra_sucess_returns() :: list(term)
-  def extra_sucess_returns do
-    Application.get_env(:git_hooks, :extra_sucess_returns, [])
+  @spec extra_success_returns() :: list(term)
+  def extra_success_returns do
+    Application.get_env(:git_hooks, :extra_success_returns, [])
   end
 
   defdelegate tasks(git_hook_type), to: TasksConfig
