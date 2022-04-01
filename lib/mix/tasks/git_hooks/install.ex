@@ -62,6 +62,10 @@ defmodule Mix.Tasks.GitHooks.Install do
           {:ok, body} ->
             target_file_path = GitPath.git_hooks_path_for(git_hook_atom_as_kebab_string)
 
+            unless opts[:quiet] || !Config.verbose?() do
+              Printer.info("Installed git hook: #{target_file_path}")
+            end
+
             target_file_body =
               body
               |> String.replace("$git_hook", git_hook_atom_as_string)
