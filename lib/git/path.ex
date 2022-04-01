@@ -3,10 +3,19 @@ defmodule GitHooks.Git.Path do
 
   alias GitHooks.Git
 
-  @doc false
+  @doc """
+  Returns the absolute `.git` path directory for the parent project.
+  """
   @spec resolve_git_hooks_path() :: any
   def resolve_git_hooks_path do
-    resolve_git_path_based_on_git_version("hooks")
+    path_for =
+      "hooks"
+      |> resolve_git_path_based_on_git_version()
+      |> Path.relative_to(resolve_app_path())
+
+    resolve_app_path()
+    |> Path.join(path_for)
+    |> String.replace(~r/\/+/, "/")
   end
 
   @doc false
@@ -20,6 +29,10 @@ defmodule GitHooks.Git.Path do
     Path.relative_to(project_path, repo_path)
   end
 
+  @doc """
+  Returns the absolute `.git` path directory for the parent project, appending
+  the given path.
+  """
   @spec git_hooks_path_for(path :: String.t()) :: String.t()
   def git_hooks_path_for(path) do
     __MODULE__.resolve_git_hooks_path()
