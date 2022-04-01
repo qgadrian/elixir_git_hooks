@@ -33,6 +33,7 @@ Main features:
   * [Auto install](#auto-install)
   * [Hook configuration](#hook-configuration)
   * [Git submodules](#git-submodules)
+  * [Custom project path](#custom-project-path)
   * [Custom mix path](#custom-mix-path)
       * [Troubleshooting in docker containers](#troubleshooting-in-docker-containers)
   * [Example config](#example-config)
@@ -117,6 +118,29 @@ Setting a custom _git hooks_ config path is also supported:
 
 ```
 git config core.hooksPath .myCustomGithooks/
+```
+
+### Custom project path
+
+This library assumes a simple Elixir project architecture. This is, an Elixir
+project in the root of a git repository.
+
+If you have a different project architecture, you can specify the absolute path
+of your project using the `project_path` configuration:
+
+```elixir
+{project_path, 0} = System.cmd("pwd", [])
+project_path = String.replace(project_path, ~r/\n/, "/")
+
+config :git_hooks,
+  hooks: [
+    pre_commit: [
+      tasks: [
+        {:cmd, "mix format --check-formatted"}
+      ]
+    ]
+  ],
+  project_path: project_path
 ```
 
 ### Custom mix path
