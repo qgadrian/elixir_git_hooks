@@ -4,7 +4,7 @@ defmodule GitHooks.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/qgadrian/elixir_git_hooks"
-  @version "0.7.4"
+  @version "0.8.0-pre0"
 
   def project do
     [

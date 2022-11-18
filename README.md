@@ -58,7 +58,7 @@ Add to dependencies:
 ```elixir
 def deps do
   [
-    {:git_hooks, "~> 0.7.0", only: [:dev], runtime: false}
+    {:git_hooks, "~> 0.8.0", only: [:dev], runtime: false}
   ]
 end
 ```
