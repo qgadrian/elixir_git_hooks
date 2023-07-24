@@ -29,28 +29,12 @@ defmodule Mix.Tasks.RunTest do
 
     test "when it is a MFA then the module function it called" do
       put_git_hook_config(:pre_commit,
-        tasks: [{GitHooks.TestSupport.MFADummy, :execute, 0}],
+        tasks: [{GitHooks.TestSupport.MFADummy, :execute}],
         verbose: true
       )
 
       capture_io(fn ->
         assert Run.run(["pre-commit"]) == :ok
-      end)
-    end
-
-    test "when the arity of the MFA is not the same as the git hook raises an error" do
-      put_git_hook_config(:pre_commit,
-        tasks: [{GitHooks.TestSupport.MFATest, :execute, 5}],
-        verbose: true
-      )
-
-      expect_error_message =
-        "Invalid Elixir.GitHooks.TestSupport.MFATest.execute arity for pre_commit, expected 0 but got 5. Check the Git hooks documentation to fix the expected parameters.\n"
-
-      capture_io(fn ->
-        assert_raise RuntimeError, expect_error_message, fn ->
-          Run.run(["pre-commit"])
-        end
       end)
     end
 
