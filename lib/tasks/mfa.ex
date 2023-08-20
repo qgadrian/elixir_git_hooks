@@ -57,18 +57,23 @@ defimpl GitHooks.Task, for: GitHooks.Tasks.MFA do
   alias GitHooks.Printer
 
   # Kernel.apply will throw a error if something fails
-  def run(
-        %MFA{
-          module: module,
-          function: function,
-          args: args
-        } = mfa,
-        _opts
-      ) do
+  def run(%MFA{} = mfa, opts, second_run? \\ false) do
+    %{module: module, function: function, args: args} = mfa
+
     result = Kernel.apply(module, function, [args])
 
     Map.put(mfa, :result, result)
   rescue
+    error in UndefinedFunctionError ->
+      if second_run? do
+        IO.warn(inspect(error))
+        Map.put(mfa, :result, error)
+      else
+        Mix.Task.run("app.start")
+
+        run(mfa, opts, true)
+      end
+
     error ->
       IO.warn(inspect(error))
       Map.put(mfa, :result, error)

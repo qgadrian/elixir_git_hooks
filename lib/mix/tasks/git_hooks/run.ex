@@ -17,8 +17,6 @@ defmodule Mix.Tasks.GitHooks.Run do
   You can also all the hooks which are configured with `mix git_hooks.run all`.
   """
 
-  @requirements ["app.start"]
-
   use Mix.Task
 
   alias GitHooks.Config
