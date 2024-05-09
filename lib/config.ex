@@ -17,6 +17,7 @@ defmodule GitHooks.Config do
     :pre_receive,
     :post_receive,
     :post_checkout,
+    :pre_merge_commit,
     :post_merge,
     :pre_push,
     :push_to_checkout,
