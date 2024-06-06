@@ -5,7 +5,6 @@ defmodule Mix.Tasks.InstallTest do
   use GitHooks.TestSupport.ConfigCase
 
   alias Mix.Tasks.GitHooks.Install
-  alias GitHooks.Git.Path, as: GitPath
 
   @tag capture_log: true
 
@@ -23,18 +22,34 @@ defmodule Mix.Tasks.InstallTest do
                pre_push: expect_hook_template("pre_push")
              ]
     end
+
+    test "allows setting a custom path to execute the hook" do
+      put_git_hook_config(
+        [:pre_commit, :pre_push],
+        tasks: {:cmd, "check"}
+      )
+
+      Application.put_env(:git_hooks, :project_path, "a_custom_path")
+
+      hooks_file = Install.run(["--dry-run", "--quiet"])
+
+      assert hooks_file == [
+               pre_commit: expect_hook_template("pre_commit", "a_custom_path"),
+               pre_push: expect_hook_template("pre_push", "a_custom_path")
+             ]
+
+      Application.delete_env(:git_hooks, :project_path)
+    end
   end
 
   #
   # Private functions
   #
 
-  defp expect_hook_template(git_hook) do
-    app_path = GitPath.resolve_app_path()
-
+  defp expect_hook_template(git_hook, project_path \\ "") do
     ~s(#!/bin/sh
 
-[ "#{app_path}" != "" ] && cd "#{app_path}"
+[ "#{project_path}" != "" ] && cd "#{project_path}"
 
 mix git_hooks.run #{git_hook} "$@"
 [ $? -ne 0 ] && exit 1
