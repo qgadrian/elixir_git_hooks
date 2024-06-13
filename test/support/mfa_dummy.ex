@@ -1,5 +1,5 @@
 defmodule GitHooks.TestSupport.MFADummy do
-  def execute() do
+  def execute([]) do
     :ok
   end
 end
