@@ -6,49 +6,50 @@
 
 # GitHooks 🪝
 
+<!--toc:start-->
+
+- [Project description](#project-description)
+- [Installation](#installation)
+  - [Backup current hooks](#backup-current-hooks)
+  - [Automatic installation](#automatic-installation)
+  - [Manual installation](#manual-installation)
+- [Configuration](#configuration)
+  - [Auto install](#auto-install)
+  - [Hook configuration](#hook-configuration)
+  - [Git submodules](#git-submodules)
+  - [Custom project path](#custom-project-path)
+  - [Custom mix path](#custom-mix-path)
+    - [Troubleshooting in docker containers](#troubleshooting-in-docker-containers)
+  - [Example config](#example-config)
+  - [Task types](#task-types)
+    - [Mix task](#mix-task)
+    - [Command](#command)
+    - [Executable file](#executable-file)
+    - [Elixir module](#elixir-module)
+- [Removing a hook](#removing-a-hook)
+- [Recipes](#recipes)
+  - [Running pre-commit hook only for staged files](#running-pre-commit-hook-only-for-staged-files)
+- [Execution](#execution)
+  - [Automatic execution](#automatic-execution)
+  - [Manual execution](#manual-execution)
+- [Copyright and License](#copyright-and-license)
+<!--toc:end-->
+
+## Project description
+
 Configure [git hooks](https://git-scm.com/docs/githooks) in your Elixir
 projects.
 
 Main features:
 
-* **Simplicity**: Automatic or manually install the configured git hook actions.
-* **Flexibility**: You choose what to use to define the git hooks actions:
-  * Bash commands
-  * Executable files
-  * Elixir modules
-* **No limits**: Any git hook is and will be supported out of the box,
- you can [check here the git hooks list](https://git-scm.com/docs/githooks)
- available.
-
-## Table of Contents
-
-
-<!-- vim-markdown-toc GFM -->
-
-* [Installation](#installation)
-  * [Backup current hooks](#backup-current-hooks)
-  * [Automatic installation](#automatic-installation)
-  * [Manual installation](#manual-installation)
-* [Configuration](#configuration)
-  * [Auto install](#auto-install)
-  * [Hook configuration](#hook-configuration)
-  * [Git submodules](#git-submodules)
-  * [Custom project path](#custom-project-path)
-  * [Custom mix path](#custom-mix-path)
-      * [Troubleshooting in docker containers](#troubleshooting-in-docker-containers)
-  * [Example config](#example-config)
-  * [Task types](#task-types)
-    * [Mix task](#mix-task)
-    * [Command](#command)
-    * [Executable file](#executable-file)
-    * [Elixir module](#elixir-module)
-* [Removing a hook](#removing-a-hook)
-* [Execution](#execution)
-  * [Automatic execution](#automatic-execution)
-  * [Manual execution](#manual-execution)
-* [Copyright and License](#copyright-and-license)
-
-<!-- vim-markdown-toc -->
+- **Simplicity**: Automatic or manually install the configured git hook actions.
+- **Flexibility**: You choose what to use to define the git hooks actions:
+  - Bash commands
+  - Executable files
+  - Elixir modules
+- **No limits**: Any git hook is and will be supported out of the box,
+  you can [check here the git hooks list](https://git-scm.com/docs/githooks)
+  available.
 
 ## Installation
 
@@ -104,10 +105,9 @@ One or more git hooks can be configured, those hooks will be the ones
 
 Currently there are supported two configuration options:
 
-  * **tasks**: A list of the commands that will be executed when running a git hook. [See types of tasks](#type-of-tasks) for more info.
-  * **verbose**: If true, the output of the mix tasks will be visible. This can be configured globally or per git hook.
-  * **branches**: Allow or forbid the hook configuration to run (or not) in certain branches using `whitelist` or `blacklist` configuration (see example below). You can use regular expressions to match a branch name.
-
+- **tasks**: A list of the commands that will be executed when running a git hook. [See types of tasks](#type-of-tasks) for more info.
+- **verbose**: If true, the output of the mix tasks will be visible. This can be configured globally or per git hook.
+- **branches**: Allow or forbid the hook configuration to run (or not) in certain branches using `whitelist` or `blacklist` configuration (see example below). You can use regular expressions to match a branch name.
 
 ### Git submodules
 
@@ -315,6 +315,16 @@ When a git hook configuration is removed, the installed hook will automatically
 delete it.
 
 Any backup done at the moment will still be kept.
+
+## Recipes
+
+List of recipes that can be useful to setup your git hooks.
+
+### Running pre-commit hook only for staged files
+
+```elixir
+{:mix_task, "credo", ["$(git diff --name-only --cached)", " --strict"]}
+```
 
 ## Execution
 
