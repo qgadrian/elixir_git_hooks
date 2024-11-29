@@ -9,6 +9,7 @@
 <!--toc:start-->
 
 - [Project description](#project-description)
+  - [Why use git hooks?](#why-use-git-hooks)
 - [Installation](#installation)
   - [Backup current hooks](#backup-current-hooks)
   - [Automatic installation](#automatic-installation)
@@ -37,8 +38,16 @@
 
 ## Project description
 
-Configure [git hooks](https://git-scm.com/docs/githooks) in your Elixir
-projects.
+Configure [git hooks](https://git-scm.com/docs/githooks) in your Elixir projects.
+
+#### Why use git hooks?
+
+- Enforces code quality: Automatically run tests, formatters, linters... before every
+  commit or push to ensure code consistency.
+- Prevent errors earlier: Catch issues with `pre-commit` or `pre-push`, reducing the
+  chance of broken builds and saving minutes and time in the CI or code review.
+- Improve workflows: Automate repetitive tasks, unify command execution, ensure
+  consistent standards across the team...
 
 Main features:
 
@@ -74,7 +83,7 @@ mix deps.get && mix deps.compile
 This library will backup automatically your current git hooks before
 overwriting them.
 
-The backup files will have the file extension `.pre_git_hooks_backup`.
+The backup files will have the file extension `.pre_git_hooks_backup`
 
 ### Automatic installation
 
@@ -85,7 +94,8 @@ See [configuration](#disable-auto-install) to disable the automatic install.
 
 ### Manual installation
 
-You can manually install the configured git hooks at any time by running:
+If you prefer **not to enforce git hooks in a project**, you can still define
+recommended hooks and allow team members to install them manually by running:
 
 ```bash
 mix git_hooks.install
@@ -351,6 +361,6 @@ mix git_hooks.run all
 
 ## Copyright and License
 
-Copyright © 2022 Adrián Quintás
+Copyright © 2022-present Adrián Quintás
 
 Source code is released under [the MIT license](./LICENSE).
