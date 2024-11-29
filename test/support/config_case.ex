@@ -1,6 +1,7 @@
 defmodule GitHooks.TestSupport.ConfigCase do
   @moduledoc """
-  This module provides a function to setup a git hook configuracion for the application.
+  This module provides a function to setup a git hook configuration 
+  for the application.
   """
 
   use ExUnit.CaseTemplate
