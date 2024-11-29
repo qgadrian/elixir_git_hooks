@@ -75,9 +75,14 @@ defmodule Mix.Tasks.InstallTest do
 
         hooks_file = Install.run(["--dry-run", "--quiet"])
 
+        # Use the resolved git path to fix symlinks on SO (such as macOS)
+        # This is not ideal, but using `Path.expand(project_path)` instead
+        # is not working because in macOS /var is a symlink to /private/var
+        resolved_project_path = GitHooks.Git.GitPath.resolve_app_path()
+
         assert hooks_file == [
-                 pre_commit: expect_hook_template("pre_commit", project_path),
-                 pre_push: expect_hook_template("pre_push", project_path)
+                 pre_commit: expect_hook_template("pre_commit", resolved_project_path),
+                 pre_push: expect_hook_template("pre_push", resolved_project_path)
                ]
       end)
     end
