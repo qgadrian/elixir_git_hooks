@@ -20,7 +20,7 @@ defmodule Mix.Tasks.GitHooks.Install do
   use Mix.Task
 
   alias GitHooks.Config
-  alias GitHooks.Git.Path, as: GitPath
+  alias GitHooks.Git.GitPath
   alias GitHooks.Printer
 
   @impl true
