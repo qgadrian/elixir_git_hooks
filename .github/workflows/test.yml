@@ -13,8 +13,8 @@ jobs:
       - name: Setup elixir
         uses: erlef/setup-beam@v1
         with:
-          otp-version: "24.2"
-          elixir-version: "1.13"
+          otp-version: "26.2"
+          elixir-version: "1.16"
 
       - name: Set mix file hash
         id: set_vars
@@ -53,4 +53,3 @@ jobs:
       - name: Run tests
         run: |
           mix test
-
