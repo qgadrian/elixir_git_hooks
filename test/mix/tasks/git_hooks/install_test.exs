@@ -44,6 +44,43 @@ defmodule Mix.Tasks.InstallTest do
 
       Application.delete_env(:git_hooks, :project_path)
     end
+
+    test "installs git hooks when run from the project root", %{tmp_dir: project_path} do
+      put_git_hook_config(
+        [:pre_commit, :pre_push],
+        tasks: {:cmd, "check"}
+      )
+
+      hooks_file = Install.run(["--dry-run", "--quiet"])
+
+      assert hooks_file == [
+               pre_commit: expect_hook_template("pre_commit", project_path),
+               pre_push: expect_hook_template("pre_push", project_path)
+             ]
+    end
+
+    test "installs git hooks when run from the dependency directory", %{tmp_dir: project_path} do
+      # Simulate being in the dependency directory
+      deps_git_hooks_dir = Path.join([project_path, "deps", "git_hooks"])
+      File.mkdir_p!(deps_git_hooks_dir)
+
+      File.cd!(deps_git_hooks_dir, fn ->
+        # Need to reset the config cache because Application env might be cached
+        Application.delete_env(:git_hooks, :project_path)
+
+        put_git_hook_config(
+          [:pre_commit, :pre_push],
+          tasks: {:cmd, "check"}
+        )
+
+        hooks_file = Install.run(["--dry-run", "--quiet"])
+
+        assert hooks_file == [
+                 pre_commit: expect_hook_template("pre_commit", project_path),
+                 pre_push: expect_hook_template("pre_push", project_path)
+               ]
+      end)
+    end
   end
 
   #
