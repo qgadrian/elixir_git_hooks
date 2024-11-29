@@ -45,7 +45,7 @@ defmodule Mix.Tasks.GitHooks.Install do
     Printer.info("Installing git hooks...")
 
     mix_path = Config.mix_path()
-    project_path = Application.get_env(:git_hooks, :project_path, "")
+    project_path = Application.get_env(:git_hooks, :project_path, GitPath.resolve_app_path())
 
     ensure_hooks_folder_exists()
     clean_missing_hooks()
