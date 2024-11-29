@@ -20,7 +20,7 @@ defmodule Mix.Tasks.GitHooks.Install do
   use Mix.Task
 
   alias GitHooks.Config
-  alias GitHooks.Git.Path, as: GitPath
+  alias GitHooks.Git.GitPath
   alias GitHooks.Printer
 
   @impl true
@@ -45,7 +45,7 @@ defmodule Mix.Tasks.GitHooks.Install do
     Printer.info("Installing git hooks...")
 
     mix_path = Config.mix_path()
-    project_path = GitPath.resolve_app_path()
+    project_path = Application.get_env(:git_hooks, :project_path, GitPath.resolve_app_path())
 
     ensure_hooks_folder_exists()
     clean_missing_hooks()
@@ -135,8 +135,7 @@ defmodule Mix.Tasks.GitHooks.Install do
 
   @spec ensure_hooks_folder_exists() :: any
   defp ensure_hooks_folder_exists do
-    "/"
-    |> GitPath.git_hooks_path_for()
+    GitPath.resolve_git_hooks_path()
     |> File.mkdir_p()
   end
 
