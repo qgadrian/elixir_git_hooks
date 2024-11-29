@@ -135,8 +135,7 @@ defmodule Mix.Tasks.GitHooks.Install do
 
   @spec ensure_hooks_folder_exists() :: any
   defp ensure_hooks_folder_exists do
-    "/"
-    |> GitPath.git_hooks_path_for()
+    GitPath.resolve_git_hooks_path()
     |> File.mkdir_p()
   end
 
