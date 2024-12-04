@@ -24,7 +24,7 @@ defmodule GitHooks.MixProject do
         "coveralls.post": :test,
         "coveralls.html": :test
       ],
-      dialyzer: [plt_add_deps: :transitive, plt_add_apps: [:mix]]
+      dialyzer: [plt_add_deps: :app_tree, plt_add_apps: [:mix]]
     ]
   end
 
