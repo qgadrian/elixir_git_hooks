@@ -301,7 +301,7 @@ hook.
 
 Just add in your config the
 [MFA](https://hexdocs.pm/elixir/typespecs.html#built-in-types) (`{module,
-function, arity}`) definition:
+function}`) definition:
 
 ```elixir
 config :git_hooks,
@@ -309,15 +309,11 @@ config :git_hooks,
   hooks: [
     commit_msg: [
       tasks: [
-        {MyModule, :execute, 2}
+        {MyModule, :execute}
       ]
     ]
   ]
 ```
-
-To check how many args you function should expect [check the git
-documentation](https://git-scm.com/docs/githooks) to know which parameters are
-being sent on each hook.
 
 ## Removing a hook
 
