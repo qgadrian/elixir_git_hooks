@@ -1,7 +1,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/qgadrian/elixir_git_hooks/badge.svg?branch=master)](https://coveralls.io/github/qgadrian/elixir_git_hooks?branch=master)
 [![Hex version](https://img.shields.io/hexpm/v/git_hooks.svg "Hex version")](https://hex.pm/packages/git_hooks)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-9768d1.svg)](https://hexdocs.pm/git_hooks)
-[![Build Status](https://travis-ci.org/qgadrian/elixir_git_hooks.svg?branch=master)](https://travis-ci.org/qgadrian/elixir_git_hooks.svg?branch=master)
+![CI Status](https://github.com/qgadrian/elixir_git_hooks/actions/workflows/test.yml/badge.svg)
 [![Inline docs](http://inch-ci.org/github/qgadrian/elixir_git_hooks.svg)](http://inch-ci.org/github/qgadrian/elixir_git_hooks)
 
 # GitHooks 🪝
