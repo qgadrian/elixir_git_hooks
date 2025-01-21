@@ -59,20 +59,22 @@ defmodule GitHooks.Tasks.Cmd do
         ) ::
           __MODULE__.t()
   def new({:cmd, original_command, opts}, git_hook_type, git_hook_args) when is_list(opts) do
-    [base_command | args] = String.split(original_command, " ")
+    env_vars = Keyword.get(opts, :env, [])
+    include_hook_args = Keyword.get(opts, :include_hook_args, false)
 
-    command_args =
-      if Keyword.get(opts, :include_hook_args, false) do
-        Enum.concat(args, git_hook_args)
+    cmd_string =
+      if include_hook_args do
+        original_command <> " " <> Enum.join(git_hook_args, " ")
       else
-        args
+        original_command
       end
 
     %__MODULE__{
       original_command: original_command,
-      command: base_command,
-      args: command_args,
-      env: Keyword.get(opts, :env, []),
+      command: "sh",
+      # ["-c", "full shell command"]
+      args: ["-c", cmd_string],
+      env: env_vars,
       git_hook_type: git_hook_type
     }
   end
