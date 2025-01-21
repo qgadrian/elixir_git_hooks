@@ -44,6 +44,7 @@ defmodule GitHooks.Tasks.MFA do
   """
   @spec new(mfa() | {module(), atom()}, GitHooks.git_hook_type(), GitHooks.git_hook_args()) ::
           __MODULE__.t()
+  @deprecated "Use mfa without arity, all functions are expected to have arity 1 and receive a list with the git hook args"
   def new({module, function, _arity}, _git_hook_type, git_hook_args) do
     %__MODULE__{
       module: module,
