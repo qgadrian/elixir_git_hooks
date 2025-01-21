@@ -38,6 +38,17 @@ defmodule Mix.Tasks.RunTest do
       end)
     end
 
+    test "is backwards compatible with MFA definition including arity" do
+      put_git_hook_config(:pre_commit,
+        tasks: [{GitHooks.TestSupport.MFADummy, :execute, 5}],
+        verbose: true
+      )
+
+      capture_io(fn ->
+        assert Run.run(["pre-commit"]) == :ok
+      end)
+    end
+
     test "when the config is unknown then an error is raised" do
       put_git_hook_config(:pre_commit,
         tasks: [{:cmd, "echo 'test string command'", :make_it_fail}],

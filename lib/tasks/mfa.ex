@@ -42,7 +42,16 @@ defmodule GitHooks.Tasks.MFA do
       %#{__MODULE__}{module: MyModule, function: :my_function, args: ["commit message"]}
 
   """
-  @spec new(mfa(), GitHooks.git_hook_type(), GitHooks.git_hook_args()) :: __MODULE__.t()
+  @spec new(mfa() | {module(), atom()}, GitHooks.git_hook_type(), GitHooks.git_hook_args()) ::
+          __MODULE__.t()
+  def new({module, function, _arity}, _git_hook_type, git_hook_args) do
+    %__MODULE__{
+      module: module,
+      function: function,
+      args: git_hook_args
+    }
+  end
+
   def new({module, function}, _git_hook_type, git_hook_args) do
     %__MODULE__{
       module: module,
