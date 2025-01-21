@@ -18,6 +18,9 @@ defmodule GitHooks.MixProject do
       docs: docs(),
       aliases: aliases(),
       test_coverage: [tool: ExCoveralls],
+      elixirc_options: [
+        warnings_as_errors: false
+      ],
       preferred_cli_env: [
         coveralls: :test,
         "coveralls.detail": :test,
@@ -63,7 +66,6 @@ defmodule GitHooks.MixProject do
 
   defp aliases do
     [
-      compile: ["compile --warnings-as-errors"],
       coveralls: ["coveralls.html"]
     ]
   end
