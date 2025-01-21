@@ -225,6 +225,7 @@ config :git_hooks,
     commit_msg: [
       tasks: [
         {:mix_task, :test},
+        {:mix_task, :"hex.user", "whoami"},
         {:mix_task, :format, ["--dry-run"]}
       ]
     ]
