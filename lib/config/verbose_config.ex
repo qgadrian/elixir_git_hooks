@@ -16,6 +16,14 @@ defmodule GitHooks.Config.VerboseConfig do
   general one.
   """
   @spec verbose?(atom) :: boolean()
+  def verbose?("all") do
+    Application.get_env(:git_hooks, :verbose, false)
+  end
+
+  def verbose?(:all) do
+    Application.get_env(:git_hooks, :verbose, false)
+  end
+
   def verbose?(git_hook_type) do
     git_hook_type
     |> Config.get_git_hook_type_config()
