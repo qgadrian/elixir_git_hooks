@@ -29,6 +29,7 @@ defmodule GitHooks do
           | {:mix_task, Mix.Task.task_name()}
           | {:mix_task, Mix.Task.task_name(), [any]}
           | mfa()
+          | {module(), atom()}
 
   @spec new_task(allowed_configs(), git_hook_type(), git_hook_args()) ::
           GitHooks.Task.t() | no_return
@@ -54,6 +55,10 @@ defmodule GitHooks do
 
   def new_task({:mix_task, _task, _args} = mix_task_config, _git_hook_type, _git_hook_args) do
     MixTask.new(mix_task_config)
+  end
+
+  def new_task({_module, _function, _arity} = mfa, git_hook_type, git_hook_args) do
+    MFA.new(mfa, git_hook_type, git_hook_args)
   end
 
   def new_task({_module, _function} = mfa, git_hook_type, git_hook_args) do
