@@ -60,7 +60,7 @@ defmodule GitHooks.MixProject do
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
       {:inch_ex, ">= 0.0.0", only: :docs},
-      {:recase, "~> 0.8.0"}
+      {:recase, "~> 0.9.0"}
     ]
   end
 
