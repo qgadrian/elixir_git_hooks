@@ -12,7 +12,7 @@ defmodule GitHooks.TestSupport.GitProjectCase do
         tmp_dir = Path.join(System.tmp_dir!(), "git_hooks_test_#{:os.system_time(:millisecond)}")
         File.mkdir_p!(tmp_dir)
 
-        System.cmd("git", ["init"], cd: tmp_dir)
+        System.cmd("git", ["-c", "init.defaultBranch=master", "init", "--quiet"], cd: tmp_dir)
 
         Application.put_env(:git_hooks, :project_path, tmp_dir)
 
