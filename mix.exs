@@ -21,12 +21,7 @@ defmodule GitHooks.MixProject do
       elixirc_options: [
         warnings_as_errors: false
       ],
-      preferred_cli_env: [
-        coveralls: :test,
-        "coveralls.detail": :test,
-        "coveralls.post": :test,
-        "coveralls.html": :test
-      ],
+
       dialyzer: [plt_add_deps: :app_tree, plt_add_apps: [:mix]]
     ]
   end
@@ -61,6 +56,17 @@ defmodule GitHooks.MixProject do
       {:excoveralls, "~> 0.10", only: :test},
       {:inch_ex, ">= 0.0.0", only: :docs},
       {:recase, "~> 0.9.1"}
+    ]
+  end
+
+  def cli do
+    [
+      preferred_envs: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 

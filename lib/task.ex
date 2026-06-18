@@ -15,7 +15,7 @@ defprotocol GitHooks.Task do
   @doc """
   Runs the task.
   """
-  def run(task, opts \\ [])
+  def run(task, opts)
 
   @spec print_result(t()) :: task :: term
   @doc """
