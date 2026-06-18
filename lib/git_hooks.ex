@@ -57,8 +57,8 @@ defmodule GitHooks do
     MixTask.new(mix_task_config)
   end
 
-  def new_task({_module, _function, _arity} = mfa, git_hook_type, git_hook_args) do
-    MFA.new(mfa, git_hook_type, git_hook_args)
+  def new_task({module, function, _arity}, git_hook_type, git_hook_args) do
+    MFA.new({module, function}, git_hook_type, git_hook_args)
   end
 
   def new_task({_module, _function} = mfa, git_hook_type, git_hook_args) do

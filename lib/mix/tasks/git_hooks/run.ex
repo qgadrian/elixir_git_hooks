@@ -82,7 +82,7 @@ defmodule Mix.Tasks.GitHooks.Run do
   defp run_task(task_config, git_hook_type, git_hook_args) do
     task_config
     |> GitHooks.new_task(git_hook_type, git_hook_args)
-    |> GitHooks.Task.run()
+    |> GitHooks.Task.run([])
     |> GitHooks.Task.print_result()
     |> GitHooks.Task.success?()
     |> exit_if_failed()
