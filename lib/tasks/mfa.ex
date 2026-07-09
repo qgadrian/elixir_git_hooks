@@ -1,6 +1,6 @@
 defmodule GitHooks.Tasks.MFA do
   @moduledoc """
-  Represents a `{module, function, arity}` (a.k.a. `mfa`) that will be evaluated
+  Represents a `{module, function}` that will be evaluated
   by the Kernel module.
 
   An `mfa` should be configured as `{module, function}`. The function of
@@ -42,17 +42,8 @@ defmodule GitHooks.Tasks.MFA do
       %#{__MODULE__}{module: MyModule, function: :my_function, args: ["commit message"]}
 
   """
-  @spec new(mfa() | {module(), atom()}, GitHooks.git_hook_type(), GitHooks.git_hook_args()) ::
+  @spec new({module(), atom()}, GitHooks.git_hook_type(), GitHooks.git_hook_args()) ::
           __MODULE__.t()
-  @deprecated "Use mfa without arity, all functions are expected to have arity 1 and receive a list with the git hook args"
-  def new({module, function, _arity}, _git_hook_type, git_hook_args) do
-    %__MODULE__{
-      module: module,
-      function: function,
-      args: git_hook_args
-    }
-  end
-
   def new({module, function}, _git_hook_type, git_hook_args) do
     %__MODULE__{
       module: module,
@@ -63,8 +54,8 @@ defmodule GitHooks.Tasks.MFA do
 end
 
 defimpl GitHooks.Task, for: GitHooks.Tasks.MFA do
-  alias GitHooks.Tasks.MFA
   alias GitHooks.Printer
+  alias GitHooks.Tasks.MFA
 
   # Kernel.apply will throw a error if something fails
   def run(%MFA{} = mfa, opts, second_run? \\ false) do

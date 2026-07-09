@@ -79,8 +79,8 @@ end
 
 defimpl GitHooks.Task, for: GitHooks.Tasks.File do
   alias GitHooks.Config
-  alias GitHooks.Tasks.File
   alias GitHooks.Printer
+  alias GitHooks.Tasks.File
 
   def run(
         %File{file_path: script_file, env: env, args: args, git_hook_type: git_hook_type} = file,
