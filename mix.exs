@@ -21,13 +21,18 @@ defmodule GitHooks.MixProject do
       elixirc_options: [
         warnings_as_errors: false
       ],
-      preferred_cli_env: [
+      dialyzer: [plt_add_deps: :app_tree, plt_add_apps: [:mix]]
+    ]
+  end
+
+  def cli do
+    [
+      preferred_envs: [
         coveralls: :test,
         "coveralls.detail": :test,
         "coveralls.post": :test,
         "coveralls.html": :test
-      ],
-      dialyzer: [plt_add_deps: :app_tree, plt_add_apps: [:mix]]
+      ]
     ]
   end
 
@@ -55,12 +60,12 @@ defmodule GitHooks.MixProject do
 
   defp deps do
     [
-      {:credo, "~> 1.7.0", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.4.1", only: [:dev], runtime: false},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.4", only: [:dev], runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
       {:inch_ex, ">= 0.0.0", only: :docs},
-      {:recase, "~> 0.8.0"}
+      {:recase, "~> 0.8"}
     ]
   end
 

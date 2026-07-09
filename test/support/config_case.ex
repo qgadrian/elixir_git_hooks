@@ -13,9 +13,7 @@ defmodule GitHooks.TestSupport.ConfigCase do
       @default_mix_tasks ["mix help", "mix help deps"]
 
       setup do
-        on_exit(fn ->
-          cleanup_config()
-        end)
+        on_exit(&cleanup_config/0)
       end
 
       @spec cleanup_config() :: :ok

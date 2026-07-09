@@ -4,7 +4,7 @@ defmodule GitHooks.Git.PathTest do
 
   alias GitHooks.Git.GitPath
 
-  @tag capture_log: true
+  @moduletag capture_log: true
 
   describe "git_hooks_path_for/1" do
     test "appends the path to the `.git/hooks` folder", %{tmp_dir: project_path} do

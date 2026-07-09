@@ -82,8 +82,8 @@ end
 
 defimpl GitHooks.Task, for: GitHooks.Tasks.Cmd do
   alias GitHooks.Config
-  alias GitHooks.Tasks.Cmd
   alias GitHooks.Printer
+  alias GitHooks.Tasks.Cmd
 
   def run(%Cmd{command: command, args: args, env: env, git_hook_type: git_hook_type} = cmd, _opts) do
     result =
