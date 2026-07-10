@@ -62,8 +62,8 @@ defmodule GitHooks.Tasks.MFA do
 end
 
 defimpl GitHooks.Task, for: GitHooks.Tasks.MFA do
-  alias GitHooks.Tasks.MFA
   alias GitHooks.Printer
+  alias GitHooks.Tasks.MFA
 
   # Kernel.apply will throw a error if something fails
   def run(%MFA{} = mfa, opts, second_run? \\ false) do
