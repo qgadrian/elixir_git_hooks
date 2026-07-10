@@ -7,7 +7,7 @@ defmodule Mix.Tasks.InstallTest do
 
   alias Mix.Tasks.GitHooks.Install
 
-  @tag capture_log: true
+  @moduletag capture_log: true
 
   describe "run/1" do
     test "replaces the hook template with config values", %{tmp_dir: project_path} do
