@@ -45,7 +45,14 @@ defmodule Mix.Tasks.GitHooks.Install do
     Printer.info("Installing git hooks...")
 
     mix_path = Config.mix_path()
-    project_path = Application.get_env(:git_hooks, :project_path, GitPath.resolve_app_path())
+
+    # Use the configured path if set. Otherwise let the hook find the working
+    # tree when it runs, so one shared hook works from any worktree.
+    project_path =
+      case Application.get_env(:git_hooks, :project_path) do
+        nil -> "$(git rev-parse --show-toplevel)"
+        path -> path
+      end
 
     ensure_hooks_folder_exists()
     clean_missing_hooks()
