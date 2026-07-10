@@ -1,55 +1,81 @@
 name: Run test suite and linters
+
 on:
   push:
+    branches: [master]
+  pull_request:
 
 jobs:
-  test:
+  lint:
+    name: Lint (format + dialyzer)
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Setup elixir
+      - name: Setup Elixir
         uses: erlef/setup-beam@v1
         with:
-          otp-version: "26.2"
-          elixir-version: "1.16"
+          otp-version: "29.0"
+          elixir-version: "1.20"
 
-      - name: Set mix file hash
-        id: set_vars
-        run: |
-          mix_hash="${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}"
-          echo "::set-output name=mix_hash::$mix_hash"
-
-      - name: Cache deps
-        uses: actions/cache@v2
+      - name: Cache deps and _build
+        uses: actions/cache@v4
         with:
-          path: deps
-          key: ${{ runner.os }}-mix-v2-${{ steps.set_vars.outputs.mix_hash }}
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-lint-mix-${{ hashFiles('mix.lock') }}
           restore-keys: |
-            ${{ runner.os }}-mix-
+            ${{ runner.os }}-lint-mix-
 
-      - name: Cache _build folder
-        uses: actions/cache@v2
-        with:
-          path: _build
-          key: ${{ runner.os }}-build-v2-${{ steps.set_vars.outputs.mix_hash }}
-          restore-keys: |
-            ${{ runner.os }}-build-v2-
+      - name: Install dependencies
+        run: mix deps.get
 
-      - name: Install Dependencies
-        run: |
-          mix deps.get
-
-      - name: Check format
-        run: |
-          mix format --check-formatted
+      - name: Check formatting
+        run: mix format --check-formatted
 
       - name: Run Dialyzer
-        run: |
-          mix dialyzer
+        run: mix dialyzer
+
+  test:
+    name: Test (Elixir ${{ matrix.elixir }} / OTP ${{ matrix.otp }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - elixir: "1.16"
+            otp: "26.2"
+          - elixir: "1.18"
+            otp: "27.2"
+          - elixir: "1.20"
+            otp: "29.0"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: ${{ matrix.otp }}
+          elixir-version: ${{ matrix.elixir }}
+
+      - name: Cache deps and _build
+        uses: actions/cache@v4
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-test-mix-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-test-mix-${{ matrix.elixir }}-${{ matrix.otp }}-
+
+      - name: Install dependencies
+        run: mix deps.get
 
       - name: Run tests
-        run: |
-          mix test
+        run: mix test
