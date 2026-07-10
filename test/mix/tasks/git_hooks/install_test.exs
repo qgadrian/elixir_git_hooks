@@ -59,13 +59,13 @@ defmodule Mix.Tasks.InstallTest do
              ]
     end
 
-    test "installs git hooks when run from the dependency directory", %{tmp_dir: project_path} do
+    test "uses the current worktree when no project path is set", %{tmp_dir: project_path} do
       # Simulate being in the dependency directory
       deps_git_hooks_dir = Path.join([project_path, "deps", "git_hooks"])
       File.mkdir_p!(deps_git_hooks_dir)
 
       File.cd!(deps_git_hooks_dir, fn ->
-        # Need to reset the config cache because Application env might be cached
+        # GitProjectCase sets :project_path; remove it to test the default.
         Application.delete_env(:git_hooks, :project_path)
 
         put_git_hook_config(
@@ -75,14 +75,13 @@ defmodule Mix.Tasks.InstallTest do
 
         hooks_file = Install.run(["--dry-run", "--quiet"])
 
-        # Use the resolved git path to fix symlinks on SO (such as macOS)
-        # This is not ideal, but using `Path.expand(project_path)` instead
-        # is not working because in macOS /var is a symlink to /private/var
-        resolved_project_path = GitHooks.Git.GitPath.resolve_app_path()
+        # No project path: the hook finds the working tree when it runs, so one
+        # shared script works from any worktree.
+        worktree_lookup = "$(git rev-parse --show-toplevel)"
 
         assert hooks_file == [
-                 pre_commit: expect_hook_template("pre_commit", resolved_project_path),
-                 pre_push: expect_hook_template("pre_push", resolved_project_path)
+                 pre_commit: expect_hook_template("pre_commit", worktree_lookup),
+                 pre_push: expect_hook_template("pre_push", worktree_lookup)
                ]
       end)
     end
@@ -95,7 +94,8 @@ defmodule Mix.Tasks.InstallTest do
   defp expect_hook_template(git_hook, project_path) do
     ~s(#!/bin/sh
 
-[ "#{project_path}" != "" ] && cd "#{project_path}"
+cd_path="#{project_path}"
+[ -n "$cd_path" ] && cd "$cd_path"
 
 mix git_hooks.run #{git_hook} "$@"
 [ $? -ne 0 ] && exit 1
