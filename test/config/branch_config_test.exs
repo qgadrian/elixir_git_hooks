@@ -7,8 +7,15 @@ defmodule GitHooks.Config.BranchConfigTest do
   alias GitHooks.Config.BranchConfig
 
   setup do
+    # Restore (don't delete) `:current_branch_fn` so the shared default from
+    # config/config.exs survives for later tests.
+    previous_branch_fn = Application.get_env(:git_hooks, :current_branch_fn)
+
     on_exit(fn ->
-      Application.delete_env(:git_hooks, :current_branch_fn)
+      case previous_branch_fn do
+        nil -> Application.delete_env(:git_hooks, :current_branch_fn)
+        branch_fn -> Application.put_env(:git_hooks, :current_branch_fn, branch_fn)
+      end
     end)
   end
 
