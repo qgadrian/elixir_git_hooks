@@ -10,6 +10,11 @@ defmodule Mix.Tasks.RunTest do
 
   alias Mix.Tasks.GitHooks.Run
 
+  setup do
+    Application.put_env(:git_hooks, :current_branch_fn, fn -> {"master\n", 0} end)
+    on_exit(fn -> Application.delete_env(:git_hooks, :current_branch_fn) end)
+  end
+
   describe "Given task" do
     test "when it is a file then the file it's executed" do
       put_git_hook_config(:pre_commit, tasks: [{:file, "priv/test_script"}], verbose: true)

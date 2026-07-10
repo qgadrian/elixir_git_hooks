@@ -75,6 +75,14 @@ defmodule GitHooks.Config do
     Application.get_env(:git_hooks, :extra_success_returns, [])
   end
 
+  @doc """
+  Returns whether installs are allowed when the resolved hooks path is outside the repo.
+  """
+  @spec allow_external_hooks_path?() :: boolean
+  def allow_external_hooks_path? do
+    Application.get_env(:git_hooks, :allow_external_hooks_path, false)
+  end
+
   defdelegate tasks(git_hook_type), to: TasksConfig
 
   defdelegate verbose?, to: VerboseConfig

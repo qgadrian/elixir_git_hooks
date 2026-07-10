@@ -53,8 +53,8 @@ defmodule GitHooks.Tasks.Mix do
 end
 
 defimpl GitHooks.Task, for: GitHooks.Tasks.Mix do
-  alias GitHooks.Tasks.Mix, as: MixTask
   alias GitHooks.Printer
+  alias GitHooks.Tasks.Mix, as: MixTask
 
   # Mix tasks raise an error if they are valid, but determining if they are
   # success or not depends on the return of the task.

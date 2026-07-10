@@ -26,6 +26,7 @@ defmodule GitHooks.TestSupport.ConfigCase do
       def cleanup_config do
         Application.delete_env(:git_hooks, :hooks)
         Application.delete_env(:git_hooks, :verbose)
+        Application.delete_env(:git_hooks, :allow_external_hooks_path)
       end
 
       @spec put_git_hook_config(list(atom) | atom, keyword) :: :ok

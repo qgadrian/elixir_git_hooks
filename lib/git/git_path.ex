@@ -28,6 +28,21 @@ defmodule GitHooks.Git.GitPath do
   end
 
   @doc """
+  Returns the absolute path to the common Git directory.
+
+  For linked worktrees and submodules, this is the Git directory that contains
+  the shared hooks directory.
+  """
+  def resolve_git_common_dir do
+    {git_common_dir, 0} =
+      System.cmd("git", ["rev-parse", "--git-common-dir"], cd: resolve_app_path())
+
+    git_common_dir
+    |> String.trim()
+    |> Path.expand(resolve_app_path())
+  end
+
+  @doc """
   Returns the path to a specific hook file within the `.git/hooks` directory.
   """
   def git_hooks_path_for(hook_name) do

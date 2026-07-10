@@ -37,6 +37,19 @@ defmodule Mix.Tasks.GitHooks.Install do
 
   @spec install(Keyword.t()) :: any()
   defp install(opts) do
+    if external_hooks_path?() && !allow_external_hooks_path?() do
+      Printer.warn("""
+      Refusing to install git hooks outside the repository.
+      Set a repo-local core.hooksPath or configure allow_external_hooks_path: true (or GIT_HOOKS_ALLOW_EXTERNAL=1) to override.
+      """)
+
+      if opts[:dry_run], do: [], else: :ok
+    else
+      do_install(opts)
+    end
+  end
+
+  defp do_install(opts) do
     template_file =
       :git_hooks
       |> :code.priv_dir()
@@ -183,6 +196,30 @@ defmodule Mix.Tasks.GitHooks.Install do
     case File.rename(backup_path, restore_path) do
       :ok -> :ok
       {:error, reason} -> Printer.warn("Cannot restore backup: #{inspect(reason)}")
+    end
+  end
+
+  defp external_hooks_path? do
+    hooks_path = GitPath.resolve_git_hooks_path()
+
+    [GitPath.resolve_app_path(), GitPath.resolve_git_common_dir()]
+    |> Enum.all?(fn trusted_path -> !path_within?(hooks_path, trusted_path) end)
+  end
+
+  defp path_within?(path, parent) do
+    relative_path = Path.relative_to(path, parent)
+
+    Path.type(relative_path) == :relative && List.first(Path.split(relative_path)) != ".."
+  end
+
+  defp allow_external_hooks_path? do
+    Config.allow_external_hooks_path?() || truthy_env?("GIT_HOOKS_ALLOW_EXTERNAL")
+  end
+
+  defp truthy_env?(key) do
+    case System.get_env(key) do
+      nil -> false
+      value -> String.downcase(value) in ["1", "true", "yes"]
     end
   end
 end

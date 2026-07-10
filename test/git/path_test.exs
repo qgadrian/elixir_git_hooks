@@ -4,7 +4,7 @@ defmodule GitHooks.Git.PathTest do
 
   alias GitHooks.Git.GitPath
 
-  @tag capture_log: true
+  @moduletag capture_log: true
 
   describe "git_hooks_path_for/1" do
     test "appends the path to the `.git/hooks` folder", %{tmp_dir: project_path} do
@@ -15,6 +15,12 @@ defmodule GitHooks.Git.PathTest do
   describe "resolve_git_hooks_path/0" do
     test "returns the git path of the project", %{tmp_dir: project_path} do
       assert GitPath.resolve_git_hooks_path() == "#{project_path}/.git/hooks"
+    end
+  end
+
+  describe "resolve_git_common_dir/0" do
+    test "returns the common Git directory", %{tmp_dir: project_path} do
+      assert GitPath.resolve_git_common_dir() == "#{project_path}/.git"
     end
   end
 

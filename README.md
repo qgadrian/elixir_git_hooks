@@ -108,6 +108,14 @@ mix git_hooks.install
 To disable the automatic install of the git hooks set the configuration key `auto_install` to
 `false`.
 
+### External hooks path
+
+If `core.hooksPath` resolves outside both the repository and its Git directory (for example, to a
+global hooks directory), `git_hooks` will refuse to install by default to avoid overwriting shared
+hooks. The default hooks directories used by linked worktrees and submodules are inside their
+common Git directories, so they remain allowed. To override the guard for another external path,
+set `allow_external_hooks_path: true` or export `GIT_HOOKS_ALLOW_EXTERNAL=1`.
+
 ### Hook configuration
 
 One or more git hooks can be configured, those hooks will be the ones
@@ -129,6 +137,9 @@ Setting a custom _git hooks_ config path is also supported:
 ```
 git config core.hooksPath .myCustomGithooks/
 ```
+
+If the configured hooks path points outside the repository, set
+`allow_external_hooks_path: true` (or `GIT_HOOKS_ALLOW_EXTERNAL=1`) to allow installation.
 
 ### Custom project path
 
