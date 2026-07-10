@@ -130,6 +130,13 @@ Setting a custom _git hooks_ config path is also supported:
 git config core.hooksPath .myCustomGithooks/
 ```
 
+### Git worktrees
+
+This library works with [git worktrees](https://git-scm.com/docs/git-worktree).
+Run `mix git_hooks.install` from any worktree; git stores the hooks in the
+repository's shared hooks directory, so every worktree is set up at once. When a
+hook runs, it runs against the worktree you are working in.
+
 ### Custom project path
 
 This library assumes a simple Elixir project architecture. This is, an Elixir
