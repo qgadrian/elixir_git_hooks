@@ -21,7 +21,6 @@ defmodule GitHooks.MixProject do
       elixirc_options: [
         warnings_as_errors: false
       ],
-
       dialyzer: [plt_add_deps: :app_tree, plt_add_apps: [:mix]]
     ]
   end
